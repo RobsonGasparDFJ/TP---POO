@@ -11,7 +11,7 @@ Projeto de um sistema bancário em Java, desenvolvido na disciplina de Programa�
 - Matheus Gonçalves Santos - 6550
 - Gustavo Souza Lopes - 6548
 - Márcio Paulino Vieira de Macedo - 6561
-- Robson Gaspar da Fonseca Junir - 6573
+- Robson Gaspar da Fonseca Junior - 6573
 - Alvaro de Oliveira Neto - 6567
 - Arthur Felipe Campos - 6559
 - Patrick Fernandes Torres - 6572
