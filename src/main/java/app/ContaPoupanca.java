@@ -1,7 +1,13 @@
 package app;
 
+import jakarta.persistence.Entity;
+
+@Entity
 public class ContaPoupanca extends Conta{
-    public ContaPoupanca(int id, Usuario usuario, String chave){
-        super(id, usuario, TipoConta.POUPANCA, chave);
+
+    protected ContaPoupanca() {}
+
+    public ContaPoupanca(Usuario usuario, String chave){
+        super(usuario, TipoConta.POUPANCA, chave);
     }
 }

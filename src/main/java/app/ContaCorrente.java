@@ -1,7 +1,13 @@
 package app;
 
+import jakarta.persistence.Entity;
+
+@Entity
 public class ContaCorrente extends Conta{
-    public ContaCorrente(int id, Usuario usuario, String chave){
-        super(id, usuario, TipoConta.CORRENTE, chave);
+
+    protected ContaCorrente() {}
+
+    public ContaCorrente(Usuario usuario, String chave){
+        super(usuario, TipoConta.CORRENTE, chave);
     }
 }
