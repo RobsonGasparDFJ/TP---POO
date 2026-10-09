@@ -1,0 +1,70 @@
+# DOCUMENTO DE REFERÊNCIAS TÉCNICAS E ARQUITETURA DE PROJETO
+
+**Projeto:** Aplicação Java SE com JPA/Hibernate Puro e Banco de Dados SQLite
+
+**Objetivo:** Justificativa da estrutura, configurações e fundamentação teórica das bibliotecas utilizadas.
+
+---
+
+## 1. Fontes e Documentações Oficiais
+
+As configurações e estruturas aplicadas no projeto foram baseadas nas especificações e documentações oficiais das ferramentas utilizadas:
+
+* **Apache Maven — Standard Directory Layout (Estrutura de Diretórios):**
+*Fonte:* [https://maven.apache.org/guides/introduction/introduction-to-the-standard-directory-layout.html](https://maven.apache.org/guides/introduction/introduction-to-the-standard-directory-layout.html)
+*Descrição:* Especificação oficial da Apache Software Foundation sobre o layout padrão de arquivos e pastas para compilação e empacotamento em projetos Java.
+* **Apache Maven — POM Reference (Estrutura do `pom.xml`):**
+*Fonte:* [https://maven.apache.org/pom.html](https://maven.apache.org/pom.html)
+*Descrição:* Documentação do modelo do projeto (*Project Object Model*), definindo a obrigatoriedade das coordenadas GAV (`groupId`, `artifactId`, `version`) e a declaração de dependências.
+* **Jakarta Persistence (JPA) Specification:**
+*Fonte:* [https://jakarta.ee/specifications/persistence/](https://jakarta.ee/specifications/persistence/)
+*Descrição:* Especificação do padrão Jakarta EE para Mapeamento Objeto-Relacional (ORM), que define a sintaxe das anotações (`@Entity`, `@Id`, `@OneToOne`) e o local exato do arquivo `META-INF/persistence.xml`.
+* **Hibernate ORM User Guide:**
+*Fonte:* [https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html](https://docs.jboss.org/hibernate/orm/6.4/userguide/html_single/Hibernate_User_Guide.html)
+*Descrição:* Manual de referência oficial do framework Hibernate, detalhando o funcionamento de `EntityManager`, estados de entidades, ciclo de vida de transações e suporte ao dialect do SQLite.
+* **SQLite JDBC Driver:**
+*Fonte:* [https://github.com/xerial/sqlite-jdbc](https://github.com/xerial/sqlite-jdbc)
+*Descrição:* Repositório oficial do driver JDBC para conexão Java com bancos de dados SQLite.
+
+---
+
+## 2. Fundamentação Teórica e Arquitetural
+
+### 2.1. O que é Maven e por que a estrutura do projeto é assim?
+
+O **Apache Maven** é uma ferramenta de automação de compilação e gerenciamento de dependências. Ele exige uma convenção sobre configuração chamada **Standard Directory Layout**:
+
+* **`src/main/java/`**: Pasta raiz do código-fonte Java. As subpastas (ex: `app/`) definem os pacotes (`package app;`). Se o código não estiver nessa estrutura, o compilador e as IDEs não reconhecem as raízes de código e o mapeamento de pacotes falha.
+* **`src/main/resources/`**: Pasta raiz para arquivos estáticos, assets e configurações que **não são código Java**. O Maven copia o conteúdo desta pasta diretamente para a raiz do *classpath* final da aplicação.
+
+### 2.2. Estrutura e Função do `pom.xml`
+
+O `pom.xml` (Project Object Model) é o manifesto do projeto. As tags obrigatórias são:
+
+* **`groupId`**: Identificador da organização ou pacote base do projeto.
+* **`artifactId`**: Nome do projeto/biblioteca compilada.
+* **`version`**: Versão do projeto.
+* **`<dependencies>`**: Lista de bibliotecas remotas que o Maven deve baixar automaticamente do repositório central (Hibernate, Dialeto SQLite e Driver JDBC) e incluir no *classpath*.
+
+### 2.3. O que é JPA e Hibernate?
+
+* **JPA (Jakarta Persistence API):** É uma **especificação** (um conjunto de interfaces e regras) que dita como o Java deve fazer Mapeamento Objeto-Relacional (ORM). O JPA não executa código diretamente, apenas define os padrões.
+* **Hibernate:** É o **provedor/framework (implementação concreta)** que executa o JPA. Ele lê os dados em memória, traduz anotações Java para comandos SQL e executa esses comandos no banco de dados.
+
+### 2.4. Estrutura do `persistence.xml`
+
+A especificação JPA exige que o arquivo de configuração se chame exatamente `persistence.xml` e esteja no diretório `META-INF/` dentro da pasta de recursos (`src/main/resources/META-INF/persistence.xml`).
+
+* **`<persistence-unit>`**: Define o nome do contexto de persistência usado na chamada `Persistence.createEntityManagerFactory("meu-sqlite-pu")`.
+* **`jakarta.persistence.jdbc.url` / `driver**`: Parâmetros para instruir a biblioteca a abrir ou criar o arquivo `.db` local via SQLite JDBC.
+* **`hibernate.dialect`**: Informa ao Hibernate qual variação de linguagem SQL ele deve gerar (neste caso, o dialeto do SQLite).
+* **`hibernate.hbm2ddl.auto` (`update`)**: Instrução que faz o Hibernate inspecionar as classes anotadas com `@Entity` e executar automaticamente comandos `CREATE TABLE` / `ALTER TABLE` no arquivo SQLite.
+
+---
+
+## 3. Funcionamento do Mapeamento, Getters, Setters e Consultas
+
+* **Consultas (`em.find`) e Getters:**
+O método `em.find(Conta.class, id)` executa uma consulta SQL (`SELECT`) no banco de dados SQLite, lê o registro retornado, instancia o objeto `Conta` na memória da JVM e preenche seus campos. Os métodos **Getters** apenas retornam o valor que já foi carregado para a memória. Eles não possuem anotações nem executam consultas SQL internas.
+* **Atualizações (Setters) e Confirmação de Transação (`commit` / Dirty Checking):**
+Invocar um método **Setter** (ou um método de negócio como `depositar()`) altera apenas o valor da variável na memória RAM durante a execução. O Hibernate monitora o estado dos objetos carregados. Quando o método `em.getTransaction().commit()` é executado, o Hibernate compara o estado atual do objeto com o estado original carregado do banco (mecanismo conhecido como *Dirty Checking*). Se houver divergência, ele gera e executa o comando SQL `UPDATE` no arquivo SQLite automaticamente.

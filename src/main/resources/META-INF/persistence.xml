@@ -1,0 +1,25 @@
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence" version="3.0">
+    <persistence-unit name="meu-sqlite-pu" transaction-type="RESOURCE_LOCAL">
+        <!-- Provedor do Hibernate -->
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+
+        <properties>
+            <!-- Conexão com SQLite -->
+            <property name="jakarta.persistence.jdbc.driver" value="org.sqlite.JDBC"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:sqlite:meubanco.db"/>
+
+            <!-- Dialeto do SQLite -->
+            <property name="hibernate.dialect" value="org.hibernate.community.dialect.SQLiteDialect"/>
+
+            <!-- Log SQL no console para monitorar as operações -->
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
+
+            <!-- Geração do Schema a partir das classes.
+                 - 'update': atualiza as tabelas se a classe mudar (recomendado apenas para dev).
+                 - 'create': destrói as tabelas e cria do zero a cada execução.
+                 - 'none': desativa (necessário ao migrar para Flyway/Liquibase no futuro). -->
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+        </properties>
+    </persistence-unit>
+</persistence>
