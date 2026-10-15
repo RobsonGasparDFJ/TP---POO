@@ -1,37 +1,12 @@
 package app;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-
-@Entity 
-@Table(name = "conta")
-@Inheritance(strategy = InheritanceType.JOINED)
 public class Conta {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idConta;
-    
-    @OneToOne
-    @JoinColumn(name = "idUsuario", nullable = false)
     private Usuario usuario;
-
-    @Enumerated(EnumType.STRING)
     private TipoConta tipoConta;
-
     private double saldo;
     private String chave;
-
-    protected Conta() {} //construtor sem argumento obrigatório pro JPA
 
     public Conta(Usuario usuario, TipoConta tipoConta, String chave){
         if(usuario == null){
@@ -67,23 +42,23 @@ public class Conta {
     // Getters e Setters
 
     public Long getIdConta() {
-        return idConta;
+        return this.idConta;
     }
 
     public Usuario getUsuario() {
-        return usuario;
+        return this.usuario;
     }
 
     public TipoConta getTipoConta() {
-        return tipoConta;
+        return this.tipoConta;
     }
 
     public double getSaldo() {
-        return saldo;
+        return this.saldo;
     }
 
     public String getChave() {
-        return chave;
+        return this.chave;
     }
 
     public void setUsuario(Usuario usuario) {

@@ -3,100 +3,121 @@ package app;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.Base64;
 
 public class Usuario {
-    private int idUsuario;
+    
+    private Long idUsuario;
     private String nome;
     private String cpf;
     private String telefone;
-    private String endereço;
+    private String endereco;
     private Conta conta;
     private String senhaHash;
-    private String salt; // relacionado ao hash //
+    private String salt;
 
-    public Usuario(int id, String nome, String cpf, String telefone, String endereço, String senha){
-        this.idUsuario = id;
+    public Usuario(String nome, String cpf, String telefone, String endereco, String senha) {
+        this.salt = gerarSalt();
         setNome(nome);
         setCpf(cpf);
         setTelefone(telefone);
-        setEndereço(endereço);
+        setEndereco(endereco);
         setSenha(senha);
+    }
+
+    // Construtor utilitário para recuperar do banco de dados
+    public Usuario(Long idUsuario, String nome, String cpf, String telefone, String endereco, String senhaHash, String salt) {
+        this.idUsuario = idUsuario;
+        this.nome = nome;
+        this.cpf = cpf;
+        this.telefone = telefone;
+        this.endereco = endereco;
+        this.senhaHash = senhaHash;
+        this.salt = salt;
+    }
+
+    private static String gerarSalt() {
+        SecureRandom random = new SecureRandom();
+        byte[] saltBytes = new byte[16];
+        random.nextBytes(saltBytes);
+        return Base64.getEncoder().encodeToString(saltBytes);
     }
 
     public void setSenha(String senha) {
         if (senha == null || senha.length() < 6) {
-            System.out.println("A senha deve ter pelo menos 6 caracteres.");
-            return;
+            throw new IllegalArgumentException("A senha deve ter pelo menos 6 caracteres.");
         }
-        this.senhaHash = hash(senha);
+        this.senhaHash = hash(senha, this.salt);
     }
 
     public boolean verificarSenha(String senha) {
-        return senha != null && hash(senha).equals(senhaHash);
+        return senha != null && hash(senha, this.salt).equals(this.senhaHash);
     }
 
-    // codigo utilizado quando é preciso hash //
-    private static String hash(String senha) {
+    private static String hash(String senha, String salt) {
         try {
-            byte[] digest = MessageDigest.getInstance("SHA-256")
-                    .digest(senha.getBytes(StandardCharsets.UTF_8));
-            return Base64.getEncoder().encodeToString(digest);
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            digest.update(salt.getBytes(StandardCharsets.UTF_8));
+            byte[] hashBytes = digest.digest(senha.getBytes(StandardCharsets.UTF_8));
+
+            return Base64.getEncoder().encodeToString(hashBytes);
+            
         } catch (NoSuchAlgorithmException e) {
-            throw new IllegalStateException(e);
+            throw new IllegalStateException("Algoritmo de criptografia indisponível", e);
         }
     }
 
-    // Getters e Setters
-
-    public int getIdUsuario() {
-        return idUsuario;
+    public Long getIdUsuario() {
+        return this.idUsuario;
     }
-    public void setIdUsuario(int idUsuario) {
+
+    public void setIdUsuario(Long idUsuario) {
         this.idUsuario = idUsuario;
     }
 
     public String getNome() {
         return nome;
     }
+
     public void setNome(String nome) {
-        if(nome == null){
-            System.out.println("O nome não pode ser vazio");
+        if (nome == null || nome.isBlank()) {
+            throw new IllegalArgumentException("O nome não pode ser vazio.");
         }
-        else {
-            this.nome = nome;
-        }
+        this.nome = nome;
     }
 
     public String getCpf() {
         return cpf;
     }
-    public void setCpf(String CPF) {
-        if(cpf == null || cpf.length() != 11){
-            System.out.println("O CPF deve ter 11 digitos.");
+
+    public void setCpf(String cpf) {
+        if (cpf == null || cpf.length() != 11) {
+            throw new IllegalArgumentException("O CPF deve ter exatamente 11 dígitos.");
         }
-        else{
-            this.cpf = CPF;
-        }
+        this.cpf = cpf;
     }
 
     public String getTelefone() {
         return telefone;
     }
+
     public void setTelefone(String telefone) {
         this.telefone = telefone;
     }
 
-    public String getEndereço() {
-        return endereço;
+    public String getEndereco() {
+        return endereco;
     }
-    public void setEndereço(String endereço) {
-        this.endereço = endereço;
+
+    public void setEndereco(String endereco) {
+        this.endereco = endereco;
     }
 
     public Conta getConta() {
         return conta;
     }
+
     public void setConta(Conta conta) {
         this.conta = conta;
     }
@@ -104,9 +125,8 @@ public class Usuario {
     public String getSenhaHash() {
         return senhaHash;
     }
-    public String getSalt(){
+
+    public String getSalt() {
         return salt;
     }
-
 }
-
