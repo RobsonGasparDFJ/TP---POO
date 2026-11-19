@@ -1,5 +1,6 @@
 package app;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -39,6 +40,23 @@ public class Extrato {
         return Collections.unmodifiableList(transacoes);
     }
 
-    public void exibirExtrato(){};
+    public void exibirExtrato(){
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+        System.out.println("===== EXTRATO - Conta " + conta.getIdConta() + " =====");
+
+        if (transacoes.isEmpty()) {
+            System.out.println("Nenhuma transação encontrada.");
+            return;
+        }
+
+        for (Transacao t : transacoes) {
+            System.out.printf("%s | %s | R$ %.2f%n",
+                    t.getDataHora().format(fmt),
+                    t.getTipo(),
+                    t.getValor());
+        }
+        System.out.println("==================================");
+    }
 
 }
