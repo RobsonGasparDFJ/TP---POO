@@ -82,12 +82,32 @@ public class DatabaseSetup {
             stmt.execute(sqlTransacao);
             stmt.execute(sqlPoupanca);
             stmt.execute(sqlCorrente);
+            adicionarColunaFotoPerfil(conn);
             for (String indice : indices) {
                 stmt.execute(indice);
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    /** Migração simples para bancos já existentes antes da criação do perfil. */
+    private static void adicionarColunaFotoPerfil(Connection conn) throws SQLException {
+        boolean existe = false;
+        try (Statement stmt = conn.createStatement();
+             var resultado = stmt.executeQuery("PRAGMA table_info(TB_Usuario)")) {
+            while (resultado.next()) {
+                if ("fotoPerfil".equalsIgnoreCase(resultado.getString("name"))) {
+                    existe = true;
+                    break;
+                }
+            }
+        }
+        if (!existe) {
+            try (Statement stmt = conn.createStatement()) {
+                stmt.execute("ALTER TABLE TB_Usuario ADD COLUMN fotoPerfil TEXT");
+            }
         }
     }
 }

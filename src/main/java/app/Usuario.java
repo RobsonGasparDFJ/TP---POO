@@ -16,6 +16,7 @@ public class Usuario {
     private Conta conta;
     private String senhaHash;
     private String salt;
+    private String fotoPerfil;
 
     public Usuario(String nome, String cpf, String telefone, String endereco, String senha) {
         this.salt = gerarSalt();
@@ -128,5 +129,13 @@ public class Usuario {
 
     public String getSalt() {
         return salt;
+    }
+
+    public String getFotoPerfil() {
+        return fotoPerfil;
+    }
+
+    public void setFotoPerfil(String fotoPerfil) {
+        this.fotoPerfil = fotoPerfil;
     }
 }

@@ -68,8 +68,16 @@ public class ControleLogin {
             Sessao.entrar(usuario);
             campoSenha.clear();
 
-            // TODO: trocar este aviso pela tela principal (dashboard) quando ela existir
-            mostrar(Alert.AlertType.INFORMATION, "Bem-vindo(a), " + usuario.getNome() + "!");
+            Parent dashboard = FXMLLoader.load(getClass().getResource("/app/ui/dashboard.fxml"));
+            BotaoEntrar.getScene().setRoot(dashboard);
+        } catch (IOException e) {
+            Throwable causa = e;
+            while (causa.getCause() != null) {
+                causa = causa.getCause();
+            }
+            e.printStackTrace();
+            mostrar(Alert.AlertType.ERROR, "Não foi possível abrir o dashboard: " + causa.getClass().getSimpleName()
+                    + " - " + (causa.getMessage() == null ? "erro desconhecido" : causa.getMessage()));
         } catch (RuntimeException e) {
             mostrar(Alert.AlertType.ERROR, "Erro ao entrar: " + e.getMessage());
         }

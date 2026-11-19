@@ -49,7 +49,7 @@ public class UsuarioDAO {
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    return new Usuario(
+                    Usuario usuario = new Usuario(
                         rs.getLong("PK_idUsuario"),
                         rs.getString("nome"),
                         rs.getString("cpf"),
@@ -58,6 +58,8 @@ public class UsuarioDAO {
                         rs.getString("senhaHash"),
                         rs.getString("salt")
                     );
+                    usuario.setFotoPerfil(rs.getString("fotoPerfil"));
+                    return usuario;
                 }
             }
         } catch (SQLException e) {
@@ -74,5 +76,20 @@ public class UsuarioDAO {
         }
 
         return usuario.verificarSenha(senhaDigitada);
+    }
+
+    public void atualizarPerfil(Usuario usuario) {
+        String sql = "UPDATE TB_Usuario SET nome = ?, telefone = ?, endereco = ?, fotoPerfil = ? WHERE PK_idUsuario = ?";
+        try (Connection conn = DatabaseSetup.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, usuario.getNome());
+            stmt.setString(2, usuario.getTelefone());
+            stmt.setString(3, usuario.getEndereco());
+            stmt.setString(4, usuario.getFotoPerfil());
+            stmt.setLong(5, usuario.getIdUsuario());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao atualizar perfil: " + e.getMessage(), e);
+        }
     }
 }
