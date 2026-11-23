@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.ui.ControleLogin">
+   <right>
+      <AnchorPane prefHeight="720.0" prefWidth="1002.0" style="-fx-background-color: #000000;" BorderPane.alignment="CENTER">
+         <children>
+            <Button fx:id="botaoFechar" layoutX="884.0" layoutY="14.0" mnemonicParsing="false" onMouseClicked="#fecharAba" prefHeight="30.0" prefWidth="23.0" style="-fx-background-color: transparent; -fx-border-color: #ffffff; -fx-border-radius: 10;" styleClass="botao-fechar">
+               <graphic>
+                  <FontIcon iconColor="WHITE" iconLiteral="fas-times" iconSize="20" />
+               </graphic>
+            </Button>
+            <Button fx:id="botaoMinimizar" layoutX="839.0" layoutY="15.0" mnemonicParsing="false" onMouseClicked="#minimizarAba" prefHeight="30.0" prefWidth="23.0" style="-fx-background-color: transparent; -fx-border-color: #ffffff; -fx-border-radius: 10;" styleClass="botao-fechar">
+               <graphic>
+                  <FontIcon iconColor="WHITE" iconLiteral="fas-window-minimize" iconSize="20" />
+               </graphic>
+            </Button>
+         </children>
+      </AnchorPane>
+   </right>
+   <left>
+      <AnchorPane prefHeight="200.0" prefWidth="350.0" BorderPane.alignment="CENTER">
+         <children>
+            <PasswordField fx:id="campoSenha" onAction="#entrar" layoutX="78.0" layoutY="334.0" prefHeight="26.0" prefWidth="205.0" promptText="SENHA" style="-fx-background-color: transparent; -fx-border-color: #000000; -fx-border-width: 0px 0px 1.3px;" styleClass="campo-login">
+               <font>
+                  <Font name="JetBrainsMono NF" size="12.0" />
+               </font>
+            </PasswordField>
+            <Button fx:id="BotaoEntrar" onAction="#entrar" layoutX="136.0" layoutY="391.0" mnemonicParsing="false" prefHeight="69.0" prefWidth="72.0" style="-fx-background-color: transparent; -fx-border-color: #000000; -fx-border-radius: 20;" styleClass="botao-entrar">
+               <font>
+                  <Font name="JetBrainsMono NF" size="12.0" />
+               </font>
+               <graphic>
+                  <FontIcon iconLiteral="fas-sign-in-alt" iconSize="30" />
+               </graphic>
+            </Button>
+            <Hyperlink fx:id="HyperLinkCriarConta" layoutX="130.0" layoutY="473.0" onMouseClicked="#janela_registro" prefHeight="20.0" prefWidth="90.0" styleClass="link-criar" text="CRIAR CONTA" textAlignment="CENTER" textFill="#361f1f">
+               <font>
+                  <Font name="JetBrainsMono NF" size="12.0" />
+               </font>
+            </Hyperlink>
+            <TextField fx:id="campoCPF" layoutX="78.0" layoutY="292.0" prefHeight="26.0" prefWidth="205.0" promptText="CPF" style="-fx-background-color: transparent; -fx-border-color: #000000; -fx-border-width: 0px 0px 1.3px;" styleClass="campo-login">
+               <font>
+                  <Font name="JetBrainsMono NF" size="12.0" />
+               </font>
+            </TextField>
+         </children>
+      </AnchorPane>
+   </left>
+</BorderPane>

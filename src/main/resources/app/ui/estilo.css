@@ -1,0 +1,331 @@
+/* ========================================================================== */
+/* ESTILOS GERAIS                                                            */
+/* ========================================================================== */
+
+.root {
+    -fx-font-family: "JetBrainsMono NF";
+}
+
+.button {
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+.button:pressed {
+    -fx-scale-x: 0.99;
+    -fx-scale-y: 0.99;
+}
+
+/* ========================================================================== */
+/* LOGIN E REGISTRO                                                          */
+/* ========================================================================== */
+
+.campo-login {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-prompt-text-fill: #888888;
+}
+
+.campo-login:focused {
+    -fx-scale-x: 1.08;
+    -fx-scale-y: 1.08;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 8, 0, 0, 2);
+}
+
+.campo-registro:focused {
+    -fx-scale-x: 1.04;
+    -fx-scale-y: 1.04;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 8, 0, 0, 2);
+}
+
+.hyperlink:focused {
+    -fx-border-color: transparent;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+/* ========================================================================== */
+/* DASHBOARD — INTERAÇÕES E CONTROLES REUTILIZÁVEIS                          */
+/* Cores dos painéis principais ficam diretamente no dashboard.fxml.         */
+/* ========================================================================== */
+
+.nav-button:hover {
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+.window-close:hover {
+    -fx-background-color: #CB5C4D;
+    -fx-text-fill: white;
+}
+
+.copy-button:hover,
+.text-button:hover {
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+}
+
+/* Cards usados em várias abas. */
+.content-card {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 13;
+    -fx-padding: 15 17;
+    -fx-border-color: #E4E0D9;
+    -fx-border-radius: 13;
+}
+
+.transfer-card {
+    -fx-background-color: #FFFDFA;
+}
+
+.card-title {
+    -fx-text-fill: #2A2825;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.card-subtitle {
+    -fx-text-fill: #8C8984;
+    -fx-font-size: 9px;
+}
+
+.muted-icon {
+    -fx-icon-color: #9B9791;
+}
+
+.text-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #B96940;
+    -fx-font-size: 9px;
+    -fx-font-weight: bold;
+    -fx-padding: 3 0 3 0;
+}
+
+/* Botões de modo: o controlador alterna a classe transfer-type-active. */
+.transfer-type {
+    -fx-background-color: #F1EFEA;
+    -fx-background-radius: 7;
+    -fx-text-fill: #77736E;
+    -fx-font-size: 9px;
+    -fx-font-weight: bold;
+    -fx-padding: 7 10;
+}
+
+.transfer-type-active {
+    -fx-background-color: #1B1B1B;
+    -fx-text-fill: white;
+}
+
+.transfer-input {
+    -fx-background-color: #F6F4F0;
+    -fx-background-radius: 7;
+    -fx-border-color: transparent;
+    -fx-padding: 8 10;
+    -fx-font-size: 10px;
+}
+
+.transfer-input:focused {
+    -fx-border-color: #B96940;
+    -fx-border-radius: 7;
+    -fx-effect: none;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+}
+
+.transfer-button {
+    -fx-background-color: #B96940;
+    -fx-background-radius: 8;
+    -fx-text-fill: white;
+    -fx-font-size: 9px;
+    -fx-font-weight: bold;
+    -fx-padding: 10;
+}
+
+.transfer-button:hover {
+    -fx-background-color: #9E4E2D;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+}
+
+.deposit-button {
+    -fx-background-color: #398364;
+    -fx-background-radius: 7;
+    -fx-text-fill: white;
+    -fx-font-size: 9px;
+    -fx-font-weight: bold;
+    -fx-padding: 10 13;
+}
+
+.deposit-button:hover {
+    -fx-background-color: #2F6E55;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+}
+
+.photo-button {
+    -fx-background-color: #F0ECE6;
+    -fx-background-radius: 7;
+    -fx-text-fill: #5E5851;
+    -fx-font-size: 9px;
+    -fx-font-weight: bold;
+    -fx-padding: 8 11;
+}
+
+.photo-button:hover {
+    -fx-background-color: #E2DDD6;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+}
+
+/* Layout das abas internas. */
+.dashboard-tabs {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.dashboard-tabs > .tab-header-area {
+    -fx-pref-height: 0;
+    -fx-max-height: 0;
+    -fx-min-height: 0;
+    -fx-opacity: 0;
+}
+
+.dashboard-tabs > .tab-content-area {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.transfer-page,
+.profile-page {
+    -fx-padding: 30;
+    -fx-background-color: #F5F3EF;
+}
+
+.transfer-panel {
+    -fx-padding: 26;
+    -fx-background-radius: 14;
+}
+
+.deposit-panel {
+    -fx-padding: 18 26;
+}
+
+.extrato-page {
+    -fx-padding: 20;
+    -fx-background-radius: 14;
+}
+
+.profile-panel {
+    -fx-padding: 28;
+    -fx-background-radius: 14;
+}
+
+.profile-photo-frame {
+    -fx-background-color: #E7A77F;
+    -fx-background-radius: 56;
+    -fx-border-color: #F4D2BE;
+    -fx-border-radius: 56;
+    -fx-border-width: 3;
+}
+
+.profile-photo-icon {
+    -fx-icon-color: white;
+}
+
+.profile-name {
+    -fx-font-size: 17px;
+}
+
+/* ========================================================================== */
+/* TABELA E GRÁFICOS — exigem seletores internos do JavaFX                   */
+/* ========================================================================== */
+
+.transactions-table {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-font-size: 9px;
+}
+
+.transactions-table .column-header-background {
+    -fx-background-color: #F5F3EF;
+    -fx-background-radius: 6 6 0 0;
+}
+
+.transactions-table .column-header,
+.transactions-table .filler {
+    -fx-background-color: transparent;
+    -fx-size: 27;
+    -fx-border-color: transparent;
+}
+
+.transactions-table .column-header .label {
+    -fx-text-fill: #85817B;
+    -fx-font-size: 8px;
+    -fx-font-weight: bold;
+}
+
+.transactions-table .table-row-cell {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent #F0EDE8 transparent;
+}
+
+.transactions-table .table-row-cell:selected {
+    -fx-background-color: #F5EEE9;
+}
+
+.transactions-table .table-cell {
+    -fx-border-color: transparent;
+    -fx-text-fill: #45423E;
+    -fx-padding: 4 5;
+}
+
+.chart {
+    -fx-padding: 3 0 0 0;
+}
+
+.chart-plot-background {
+    -fx-background-color: transparent;
+}
+
+.chart-vertical-grid-lines,
+.chart-horizontal-grid-lines {
+    -fx-stroke: #EEEAE4;
+}
+
+.chart-axis {
+    -fx-tick-label-fill: #908C86;
+}
+
+.chart-series-area-fill {
+    -fx-fill: rgba(185, 105, 64, 0.16);
+}
+
+.chart-series-area-line,
+.chart-series-line {
+    -fx-stroke: #B96940;
+}
+
+.chart-series-area-line {
+    -fx-stroke-width: 2px;
+}
+
+.default-color0.chart-bar {
+    -fx-bar-fill: #B96940;
+}
+
+.chart-bar {
+    -fx-background-radius: 5 5 0 0;
+}
+
+.flow-income,
+.flow-expense {
+    -fx-font-size: 9px;
+    -fx-font-weight: bold;
+}
+
+.flow-income { -fx-text-fill: #398364; }
+.flow-expense { -fx-text-fill: #B96940; }

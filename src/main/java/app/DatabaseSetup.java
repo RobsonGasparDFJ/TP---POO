@@ -93,12 +93,9 @@ public class DatabaseSetup {
             stmt.execute(sqlTransacao);
             stmt.execute(sqlPoupanca);
             stmt.execute(sqlCorrente);
-<<<<<<< Updated upstream
-=======
             migrarTiposTransacao(conn); // precisa vir antes de TB_Aposta, que referencia TB_Transacao
             stmt.execute(sqlAposta);
             adicionarColunaFotoPerfil(conn);
->>>>>>> Stashed changes
             for (String indice : indices) {
                 stmt.execute(indice);
             }
@@ -107,8 +104,6 @@ public class DatabaseSetup {
             e.printStackTrace();
         }
     }
-<<<<<<< Updated upstream
-=======
 
     private static String sqlTabelaTransacao(String nome) {
         return """
@@ -183,5 +178,4 @@ public class DatabaseSetup {
             }
         }
     }
->>>>>>> Stashed changes
 }
