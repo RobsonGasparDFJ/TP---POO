@@ -27,12 +27,8 @@
 
 <AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #F5F3EF; -fx-font-family: 'JetBrainsMono NF';" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.ui.ControleDashboard">
    <children>
-<<<<<<< HEAD
       <!-- MUDANÇA 1: barra lateral ancorada em cima e embaixo, para esticar em tela cheia -->
       <AnchorPane prefHeight="720.0" prefWidth="226.0" style="-fx-background-color: #151515;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0"><children>
-=======
-      <AnchorPane prefHeight="720.0" prefWidth="226.0" style="-fx-background-color: #151515;"><children>
->>>>>>> Gustavo
          <!-- Itens independentes: mova layoutX/layoutY direto no Scene Builder. -->
          <StackPane layoutX="25.0" layoutY="25.0" maxHeight="42.0" maxWidth="42.0" minHeight="42.0" minWidth="42.0" prefHeight="42.0" prefWidth="42.0" style="-fx-background-color: #B96940; -fx-background-radius: 4;"><children><FontIcon iconColor="WHITE" iconLiteral="fas-landmark" iconSize="18" /></children></StackPane>
          <Label layoutX="78.0" layoutY="28.0" style="-fx-text-fill: #F7F3ED; -fx-font-size: 15px; -fx-font-weight: bold;" text="NOVA BANK" />
@@ -53,7 +49,6 @@
          <AnchorPane prefHeight="82.0" style="-fx-border-color: transparent transparent #DFDBD3 transparent; -fx-border-width: 0 0 1 0;" AnchorPane.leftAnchor="38.0" AnchorPane.rightAnchor="38.0" AnchorPane.topAnchor="0.0"><children>
             <Label layoutX="0.0" layoutY="20.0" style="-fx-text-fill: #9D9A94; -fx-font-size: 9px; -fx-font-weight: bold;" text="PAINEL DA CONTA" />
             <Label fx:id="labelSaudacao" layoutX="0.0" layoutY="36.0" style="-fx-text-fill: #1C1B1A; -fx-font-size: 23px; -fx-font-weight: bold;" text="Olá, cliente" />
-<<<<<<< HEAD
             <!-- MUDANÇA 2: rightAnchor 162 -> 204 -->
             <ComboBox fx:id="comboContas" layoutX="571.0" layoutY="28.0" onAction="#trocarConta" prefWidth="245.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 9; -fx-border-color: #DFDBD3; -fx-border-radius: 9; -fx-padding: 2 5; -fx-font-size: 10px;" AnchorPane.rightAnchor="204.0" />
             <!-- Avatar quadrado: largura e altura travadas em 40. MUDANÇA 3: rightAnchor 98 -> 140 -->
@@ -62,12 +57,6 @@
             <Button fx:id="botaoMinimizar" layoutY="25.0" mnemonicParsing="false" onAction="#minimizar" prefHeight="32.0" prefWidth="32.0" style="-fx-background-color: #EBE8E2; -fx-background-radius: 8; -fx-text-fill: #32302E; -fx-padding: 0;" styleClass="window-button" AnchorPane.rightAnchor="91.0"><graphic><FontIcon iconLiteral="fas-window-minimize" iconSize="15" /></graphic></Button>
             <!-- MUDANÇA 5: botão NOVO de maximizar / restaurar -->
             <Button fx:id="botaoMaximizar" layoutY="25.0" mnemonicParsing="false" onAction="#maximizar" prefHeight="32.0" prefWidth="32.0" style="-fx-background-color: #EBE8E2; -fx-background-radius: 8; -fx-text-fill: #32302E; -fx-padding: 0;" styleClass="window-button" AnchorPane.rightAnchor="49.0"><graphic><FontIcon iconLiteral="fas-window-maximize" iconSize="15" /></graphic></Button>
-=======
-            <ComboBox fx:id="comboContas" layoutX="571.0" layoutY="28.0" onAction="#trocarConta" prefWidth="245.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 9; -fx-border-color: #DFDBD3; -fx-border-radius: 9; -fx-padding: 2 5; -fx-font-size: 10px;" AnchorPane.rightAnchor="162.0" />
-            <!-- Avatar quadrado: largura e altura travadas em 40. -->
-            <StackPane layoutY="21.0" maxHeight="40.0" maxWidth="40.0" minHeight="40.0" minWidth="40.0" prefHeight="40.0" prefWidth="40.0" style="-fx-background-color: #B96940; -fx-background-radius: 4;" AnchorPane.rightAnchor="98.0"><children><FontIcon iconColor="#F6F2EC" iconLiteral="fas-user" iconSize="15" /><ImageView fx:id="fotoMiniatura" fitHeight="36.0" fitWidth="36.0" preserveRatio="false" smooth="true" /></children></StackPane>
-            <Button fx:id="botaoMinimizar" layoutY="25.0" mnemonicParsing="false" onAction="#minimizar" prefHeight="32.0" prefWidth="32.0" style="-fx-background-color: #EBE8E2; -fx-background-radius: 8; -fx-text-fill: #32302E; -fx-padding: 0;" styleClass="window-button" AnchorPane.rightAnchor="49.0"><graphic><FontIcon iconLiteral="fas-window-minimize" iconSize="15" /></graphic></Button>
->>>>>>> Gustavo
             <Button layoutY="25.0" mnemonicParsing="false" onAction="#fechar" prefHeight="32.0" prefWidth="32.0" style="-fx-background-color: #EBE8E2; -fx-background-radius: 8; -fx-text-fill: #32302E; -fx-padding: 0;" styleClass="window-close" AnchorPane.rightAnchor="7.0"><graphic><FontIcon iconLiteral="fas-times" iconSize="15" /></graphic></Button>
          </children></AnchorPane>
          <TabPane fx:id="abasConteudo" styleClass="dashboard-tabs" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="38.0" AnchorPane.rightAnchor="38.0" AnchorPane.topAnchor="97.0"><tabs>
@@ -78,18 +67,11 @@
                <VBox spacing="7.0" styleClass="content-card" GridPane.rowIndex="2"><children><HBox alignment="CENTER_LEFT"><children><VBox spacing="2.0" HBox.hgrow="ALWAYS"><children><Label styleClass="card-title" text="Movimentações" /><Label fx:id="labelResumoTransacoes" styleClass="card-subtitle" text="Nenhuma movimentação" /></children></VBox><Button mnemonicParsing="false" onAction="#mostrarExtrato" styleClass="text-button" text="VER EXTRATO" /></children></HBox><Label styleClass="card-subtitle" text="Use a aba Extrato para consultar todas as transações da conta selecionada." wrapText="true" /></children></VBox>
                <VBox spacing="7.0" styleClass="content-card" GridPane.columnIndex="1" GridPane.rowIndex="2"><children><HBox alignment="CENTER_LEFT"><children><VBox spacing="2.0" HBox.hgrow="ALWAYS"><children><Label styleClass="card-title" text="Fluxo financeiro" /><Label styleClass="card-subtitle" text="Entradas e saídas da conta" /></children></VBox><FontIcon iconLiteral="fas-chart-bar" iconSize="15" styleClass="muted-icon" /></children></HBox><BarChart fx:id="graficoFluxo" animated="false" legendVisible="false" styleClass="flow-chart" VBox.vgrow="ALWAYS"><xAxis><CategoryAxis /></xAxis><yAxis><NumberAxis forceZeroInRange="true" /></yAxis></BarChart><HBox spacing="15.0"><children><Label fx:id="labelEntradas" styleClass="flow-income" text="Entradas: R$ 0,00" /><Label fx:id="labelSaidas" styleClass="flow-expense" text="Saídas: R$ 0,00" /></children></HBox></children></VBox>
             </children>
-<<<<<<< HEAD
                <!-- MUDANÇA 6: linhas 1 e 2 crescem com a janela; a linha do saldo mantém o tamanho -->
                <rowConstraints>
                   <RowConstraints vgrow="NEVER" />
                   <RowConstraints vgrow="ALWAYS" />
                   <RowConstraints vgrow="ALWAYS" />
-=======
-               <rowConstraints>
-                  <RowConstraints />
-                  <RowConstraints />
-                  <RowConstraints />
->>>>>>> Gustavo
                </rowConstraints></GridPane></content></Tab>
             <!-- ABA TRANSFERIR: estilos visuais editáveis diretamente aqui. -->
             <Tab text="Transferir"><content><VBox alignment="CENTER" spacing="18.0" style="-fx-padding: 30; -fx-background-color: #F5F3EF;"><children><VBox maxWidth="480.0" spacing="13.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 14; -fx-border-color: #E4E0D9; -fx-border-radius: 14; -fx-padding: 26;"><children><Label style="-fx-text-fill: #2A2825; -fx-font-size: 12px; -fx-font-weight: bold;" text="Nova transferência" /><Label style="-fx-text-fill: #8C8984; -fx-font-size: 9px;" text="Escolha Pix ou número da conta e informe o valor." /><HBox spacing="8.0"><children><Button fx:id="botaoPix" mnemonicParsing="false" onAction="#selecionarPix" styleClass="transfer-type transfer-type-active" text="POR PIX" /><Button fx:id="botaoConta" mnemonicParsing="false" onAction="#selecionarConta" styleClass="transfer-type" text="POR CONTA" /></children></HBox><TextField fx:id="campoDestino" promptText="Chave Pix do destinatário" style="-fx-background-color: #F6F4F0; -fx-background-radius: 7; -fx-border-color: transparent; -fx-padding: 8 10; -fx-font-size: 10px;" styleClass="transfer-input" /><TextField fx:id="campoValor" onAction="#transferir" promptText="Valor (R$)" style="-fx-background-color: #F6F4F0; -fx-background-radius: 7; -fx-border-color: transparent; -fx-padding: 8 10; -fx-font-size: 10px;" styleClass="transfer-input" /><Button fx:id="botaoTransferir" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#transferir" style="-fx-background-color: #B96940; -fx-background-radius: 8; -fx-text-fill: white; -fx-font-size: 9px; -fx-font-weight: bold; -fx-padding: 10;" styleClass="transfer-button" text="CONTINUAR TRANSFERÊNCIA" /></children></VBox><VBox maxWidth="480.0" spacing="10.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 13; -fx-border-color: #E4E0D9; -fx-border-radius: 13; -fx-padding: 18 26;"><children><Label style="-fx-text-fill: #2A2825; -fx-font-size: 12px; -fx-font-weight: bold;" text="Adicionar saldo para teste" /><Label style="-fx-text-fill: #8C8984; -fx-font-size: 9px;" text="Cria um depósito e registra a operação no extrato." /><HBox spacing="9.0"><children><TextField fx:id="campoDeposito" onAction="#adicionarSaldo" promptText="Valor para adicionar (R$)" style="-fx-background-color: #F6F4F0; -fx-background-radius: 7; -fx-border-color: transparent; -fx-padding: 8 10; -fx-font-size: 10px;" styleClass="transfer-input" HBox.hgrow="ALWAYS" /><Button mnemonicParsing="false" onAction="#adicionarSaldo" style="-fx-background-color: #398364; -fx-background-radius: 7; -fx-text-fill: white; -fx-font-size: 9px; -fx-font-weight: bold; -fx-padding: 10 13;" styleClass="deposit-button" text="ADICIONAR" /></children></HBox></children></VBox></children></VBox></content></Tab>
@@ -116,8 +98,4 @@
          </tabs></TabPane>
       </children></AnchorPane>
    </children>
-<<<<<<< HEAD
 </AnchorPane>
-=======
-</AnchorPane>
->>>>>>> Gustavo

@@ -329,7 +329,6 @@
 
 .flow-income { -fx-text-fill: #398364; }
 .flow-expense { -fx-text-fill: #B96940; }
-<<<<<<< HEAD
 
 
 .root {
@@ -542,5 +541,3 @@
 .janela-fechar:hover {
     -fx-background-color: #CB5C4D;
 }
-=======
->>>>>>> Gustavo
