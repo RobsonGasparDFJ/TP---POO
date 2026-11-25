@@ -1,7 +1,7 @@
 package app.ui;
 
-import java.io.IOException;
 import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.NumberFormat;
@@ -10,20 +10,24 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 import app.Conta;
+import app.ContaCorrente;
 import app.ContaDAO;
+import app.ContaPoupanca;
 import app.DatabaseSetup;
+import app.MovimentacaoService;
 import app.TipoConta;
 import app.TipoTransacao;
 import app.Transacao;
 import app.TransacaoDAO;
 import app.TransferenciaService;
-import app.MovimentacaoService;
 import app.UsuarioDAO;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -32,19 +36,20 @@ import javafx.scene.chart.BarChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.shape.Circle;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
-import javafx.stage.Stage;
+import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
 /** Controla os dados reais exibidos em dashboard.fxml. */
@@ -79,6 +84,12 @@ public class ControleDashboard {
     @FXML private Label labelNomePerfil;
     @FXML private ImageView fotoPerfil;
     @FXML private ImageView fotoMiniatura;
+    @FXML private Button botaoRemoverFoto;
+    @FXML private Label labelInfoNovaConta;
+    @FXML private ComboBox<TipoConta> comboTipoNovaConta;
+    @FXML private TextField campoChaveNovaConta;
+    @FXML private Button botaoCriarConta;
+    @FXML private Button botaoDeletarConta;
     @FXML private TextField campoDestino;
     @FXML private TextField campoValor;
     @FXML private TextField campoDeposito;
@@ -94,10 +105,13 @@ public class ControleDashboard {
     @FXML private AreaChart<String, Number> graficoSaldo;
     @FXML private BarChart<String, Number> graficoFluxo;
     @FXML private ControleCassino cassinoController; // injetado pelo <fx:include fx:id="cassino"> do dashboard.fxml
+    @FXML private Button botaoMaximizar;
+
 
     @FXML
     public void initialize() {
         configurarContas();
+        JanelaUtil.sincronizarIcone(botaoMaximizar);
         configurarTabela();
         fotoMiniatura.setClip(new Circle(17.5, 17.5, 17.5));
         if (Sessao.getUsuarioLogado() == null) {
@@ -121,6 +135,14 @@ public class ControleDashboard {
             }
             @Override public Conta fromString(String texto) { return null; }
         });
+
+        comboTipoNovaConta.setConverter(new StringConverter<>() {
+            @Override public String toString(TipoConta tipo) {
+                if (tipo == null) return "Tipo de conta";
+                return tipo == TipoConta.CORRENTE ? "Conta Corrente" : "Conta Poupança";
+            }
+            @Override public TipoConta fromString(String texto) { return null; }
+        });
     }
 
     private void configurarTabela() {
@@ -143,6 +165,7 @@ public class ControleDashboard {
                     .orElse(contas.isEmpty() ? null : contas.get(0));
             comboContas.setValue(conta);
             carregarConta(conexao, conta);
+            atualizarOpcoesNovaConta(contas);
         } catch (SQLException | RuntimeException e) {
             mostrar(Alert.AlertType.ERROR, "Não foi possível carregar o dashboard: " + e.getMessage());
         }
@@ -171,6 +194,9 @@ public class ControleDashboard {
             labelConta.setText(tipo + "  •  Nº " + conta.getIdConta());
             labelChavePix.setText("PIX: " + conta.getChave());
             transacoes = transacaoDAO.listarPorConta(conexao, conta.getIdConta());
+        }
+        if (botaoDeletarConta != null) {
+            botaoDeletarConta.setDisable(conta == null);
         }
         tabelaTransacoes.setItems(FXCollections.observableArrayList(transacoes));
         labelResumoTransacoes.setText(transacoes.isEmpty() ? "Nenhuma movimentação recente" : transacoes.size() + " movimentação(ões) encontrada(s)");
@@ -316,6 +342,20 @@ public class ControleDashboard {
     }
 
     @FXML
+    private void removerFoto() {
+        var usuario = Sessao.getUsuarioLogado();
+        if (usuario == null) return;
+        try {
+            usuario.setFotoPerfil(null);
+            usuarioDAO.atualizarPerfil(usuario);
+            carregarFoto(null);
+            mostrar(Alert.AlertType.INFORMATION, "Foto de perfil removida.");
+        } catch (RuntimeException e) {
+            mostrar(Alert.AlertType.WARNING, "Não foi possível remover a foto: " + e.getMessage());
+        }
+    }
+
+    @FXML
     private void salvarPerfil() {
         try {
             var usuario = Sessao.getUsuarioLogado();
@@ -331,8 +371,130 @@ public class ControleDashboard {
         }
     }
 
+    private void atualizarOpcoesNovaConta(List<Conta> contasExistentes) {
+        if (comboTipoNovaConta == null) return;
+
+        boolean temCorrente = contasExistentes.stream().anyMatch(c -> c.getTipoConta() == TipoConta.CORRENTE);
+        boolean temPoupanca = contasExistentes.stream().anyMatch(c -> c.getTipoConta() == TipoConta.POUPANCA);
+
+        List<TipoConta> disponiveis = new ArrayList<>();
+        if (!temCorrente) disponiveis.add(TipoConta.CORRENTE);
+        if (!temPoupanca) disponiveis.add(TipoConta.POUPANCA);
+
+        comboTipoNovaConta.setItems(FXCollections.observableArrayList(disponiveis));
+
+        if (disponiveis.isEmpty()) {
+            comboTipoNovaConta.setDisable(true);
+            campoChaveNovaConta.setDisable(true);
+            botaoCriarConta.setDisable(true);
+            labelInfoNovaConta.setText("Você já possui Conta Corrente e Conta Poupança ativas.");
+        } else {
+            comboTipoNovaConta.setDisable(false);
+            campoChaveNovaConta.setDisable(false);
+            botaoCriarConta.setDisable(false);
+            comboTipoNovaConta.setValue(disponiveis.get(0));
+            labelInfoNovaConta.setText("Você pode abrir uma "
+                    + (disponiveis.get(0) == TipoConta.CORRENTE ? "Conta Corrente" : "Conta Poupança")
+                    + " adicional vinculada ao seu perfil.");
+        }
+    }
+
+    @FXML
+    private void criarNovaConta() {
+        var usuario = Sessao.getUsuarioLogado();
+        if (usuario == null) return;
+
+        TipoConta tipoSelecionado = comboTipoNovaConta.getValue();
+        String chavePix = campoChaveNovaConta.getText() == null ? "" : campoChaveNovaConta.getText().trim();
+
+        try {
+            if (tipoSelecionado == null) {
+                throw new IllegalArgumentException("Selecione o tipo da nova conta.");
+            }
+            if (chavePix.isBlank()) {
+                throw new IllegalArgumentException("Informe uma chave Pix para a nova conta.");
+            }
+
+            try (Connection conexao = DatabaseSetup.getConnection()) {
+                List<Conta> contasAtuais = contaDAO.buscarPorUsuario(conexao, usuario.getIdUsuario());
+                boolean jaPossuiTipo = contasAtuais.stream().anyMatch(c -> c.getTipoConta() == tipoSelecionado);
+                if (jaPossuiTipo) {
+                    throw new IllegalArgumentException("Você já possui uma conta desse tipo.");
+                }
+
+                if (contaDAO.buscarPorChave(conexao, chavePix) != null) {
+                    throw new IllegalArgumentException("Essa chave Pix já está cadastrada em outra conta.");
+                }
+
+                Conta novaConta = (tipoSelecionado == TipoConta.CORRENTE)
+                        ? new ContaCorrente(usuario, chavePix)
+                        : new ContaPoupanca(usuario, chavePix);
+
+                contaDAO.inserir(conexao, novaConta);
+
+                campoChaveNovaConta.clear();
+                List<Conta> contasAtualizadas = contaDAO.buscarPorUsuario(conexao, usuario.getIdUsuario());
+                comboContas.setItems(FXCollections.observableArrayList(contasAtualizadas));
+                comboContas.setValue(novaConta);
+                carregarConta(conexao, novaConta);
+                atualizarOpcoesNovaConta(contasAtualizadas);
+            }
+
+            mostrar(Alert.AlertType.INFORMATION, "Nova conta criada e selecionada com sucesso!");
+        } catch (IllegalArgumentException e) {
+            mostrar(Alert.AlertType.WARNING, e.getMessage());
+        } catch (SQLException e) {
+            mostrar(Alert.AlertType.ERROR, "Erro ao criar nova conta no banco: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void deletarContaAtual() {
+        Conta contaAtual = comboContas.getValue();
+        if (contaAtual == null) {
+            mostrar(Alert.AlertType.WARNING, "Nenhuma conta selecionada para encerrar.");
+            return;
+        }
+
+        if (Math.abs(contaAtual.getSaldo()) > 0.009) {
+            mostrar(Alert.AlertType.WARNING,
+                    "Não é possível encerrar uma conta com saldo diferente de R$ 0,00 (saldo atual: "
+                            + MOEDA.format(contaAtual.getSaldo()) + "). Transfira o valor antes.");
+            return;
+        }
+
+        String tipoNome = contaAtual.getTipoConta() == TipoConta.CORRENTE ? "Conta Corrente" : "Conta Poupança";
+        Alert confirmacao = new Alert(Alert.AlertType.CONFIRMATION,
+                "Tem certeza que deseja encerrar a " + tipoNome + " Nº " + contaAtual.getIdConta()
+                        + "?\nEssa ação não poderá ser desfeita.",
+                ButtonType.YES, ButtonType.NO);
+        confirmacao.setHeaderText("Encerrar conta");
+        if (labelSaudacao != null && labelSaudacao.getScene() != null) {
+            confirmacao.initOwner(labelSaudacao.getScene().getWindow());
+        }
+
+        Optional<ButtonType> resposta = confirmacao.showAndWait();
+        if (resposta.isEmpty() || resposta.get() != ButtonType.YES) return;
+
+        try (Connection conexao = DatabaseSetup.getConnection()) {
+            contaDAO.deletar(conexao, contaAtual);
+            comboContas.setValue(null);
+            atualizarDados();
+            mostrar(Alert.AlertType.INFORMATION, tipoNome + " encerrada com sucesso.");
+        } catch (SQLException e) {
+            mostrar(Alert.AlertType.ERROR,
+                    "Não foi possível encerrar a conta (verifique se há transações vinculadas): " + e.getMessage());
+        } catch (RuntimeException e) {
+            mostrar(Alert.AlertType.WARNING, e.getMessage());
+        }
+    }
+
     private void carregarFoto(String caminho) {
-        if (caminho == null || caminho.isBlank()) {
+        boolean temFoto = caminho != null && !caminho.isBlank();
+        if (botaoRemoverFoto != null) {
+            botaoRemoverFoto.setDisable(!temFoto);
+        }
+        if (!temFoto) {
             fotoPerfil.setImage(null);
             fotoMiniatura.setImage(null);
             return;
@@ -377,4 +539,11 @@ public class ControleDashboard {
         if (labelSaudacao != null && labelSaudacao.getScene() != null) alerta.initOwner(labelSaudacao.getScene().getWindow());
         alerta.showAndWait();
     }
+
+    @FXML
+    void maximizar(ActionEvent event) {
+    Stage stage = (Stage) botaoMaximizar.getScene().getWindow();
+    JanelaUtil.alternarMaximizada(stage);
+    JanelaUtil.sincronizarIcone(botaoMaximizar);
+}
 }

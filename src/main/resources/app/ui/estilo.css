@@ -329,3 +329,250 @@
 
 .flow-income { -fx-text-fill: #398364; }
 .flow-expense { -fx-text-fill: #B96940; }
+
+
+.root {
+    -cor-primaria: #4A3AFF;   
+    -cor-destaque: #FFE600;   
+    -cor-escura:   #0D0B2B;   
+}
+
+/* ---- lado esquerdo: formulário ---- */
+.login-form {
+    -fx-background-color: #FFFFFF;
+}
+
+.login-logo {
+    -fx-background-color: -cor-primaria;
+    -fx-background-radius: 11;
+}
+
+.login-logo-letra {
+    -fx-text-fill: -cor-destaque;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+.login-nome {
+    -fx-text-fill: -cor-escura;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+.login-titulo {
+    -fx-text-fill: -cor-escura;
+    -fx-font-size: 30px;
+    -fx-font-weight: bold;
+}
+
+.login-subtitulo {
+    -fx-text-fill: #7A7A95;
+    -fx-font-size: 11px;
+    -fx-padding: 6 0 0 0;
+}
+
+.login-rotulo {
+    -fx-text-fill: #7A7A95;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+}
+
+.login-campo {
+    -fx-background-color: #F4F4FA;
+    -fx-background-radius: 10;
+    -fx-border-color: #E3E3EE;
+    -fx-border-radius: 10;
+    -fx-border-width: 1.5;
+    -fx-padding: 12 14;
+    -fx-font-size: 13px;
+    -fx-text-fill: -cor-escura;
+    -fx-prompt-text-fill: #A9A9BF;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.login-campo:focused {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: -cor-primaria;
+    -fx-effect: none;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+}
+
+.login-botao {
+    -fx-background-color: -cor-primaria;
+    -fx-background-radius: 10;
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-padding: 14 0;
+    -fx-content-display: right;
+    -fx-graphic-text-gap: 10;
+}
+
+.login-botao:hover {
+    -fx-background-color: derive(-cor-primaria, -15%);
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+}
+
+.login-botao:pressed {
+    -fx-background-color: derive(-cor-primaria, -28%);
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+}
+
+.login-sem-conta {
+    -fx-text-fill: #7A7A95;
+    -fx-font-size: 11px;
+}
+
+.login-link {
+    -fx-text-fill: -cor-primaria;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-padding: 0 0 0 4;
+    -fx-border-color: transparent;
+}
+
+.login-link:visited {
+    -fx-text-fill: -cor-primaria;
+}
+
+.login-link:hover {
+    -fx-underline: true;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+}
+
+/* ---- lado direito: carrossel ---- */
+.login-marca {
+    -fx-background-color: -cor-escura;
+}
+
+/* degradê por cima da foto: escuro à esquerda (texto) e embaixo (caixinhas) */
+.login-slide-overlay {
+    -fx-background-color:
+        linear-gradient(to right, rgba(13, 11, 43, 0.82) 0%, rgba(13, 11, 43, 0.50) 50%, rgba(13, 11, 43, 0.10) 100%),
+        linear-gradient(to top, rgba(13, 11, 43, 0.65) 0%, rgba(13, 11, 43, 0) 45%);
+}
+
+.login-slide-titulo {
+    -fx-text-fill: -cor-destaque;
+    -fx-font-size: 40px;
+    -fx-font-weight: bold;
+}
+
+.login-slide-texto {
+    -fx-text-fill: white;
+    -fx-font-size: 15px;
+}
+
+.login-cta {
+    -fx-background-color: -cor-destaque;
+    -fx-background-radius: 4;
+    -fx-text-fill: -cor-primaria;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-padding: 14 30;
+}
+
+.login-cta:hover {
+    -fx-background-color: derive(-cor-destaque, -10%);
+}
+
+/* bolinhas do carrossel */
+.login-ponto {
+    -fx-background-color: rgba(255, 255, 255, 0.45);
+    -fx-background-radius: 5;
+    -fx-min-width: 9;
+    -fx-pref-width: 9;
+    -fx-max-width: 9;
+    -fx-min-height: 9;
+    -fx-pref-height: 9;
+    -fx-max-height: 9;
+    -fx-cursor: hand;
+}
+
+.login-ponto-ativo {
+    -fx-background-color: -cor-destaque;
+    -fx-min-width: 28;
+    -fx-pref-width: 28;
+    -fx-max-width: 28;
+}
+
+/* caixinhas brancas de baixo */
+.login-mini-card {
+    -fx-background-color: white;
+    -fx-background-radius: 6;
+    -fx-padding: 14 12;
+}
+
+.login-mini-card .ikonli-font-icon {
+    -fx-icon-color: -cor-primaria;
+}
+
+.login-mini-titulo {
+    -fx-text-fill: -cor-primaria;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+.login-mini-sub {
+    -fx-text-fill: #5B5B7A;
+    -fx-font-size: 10px;
+    -fx-wrap-text: true;
+    -fx-text-alignment: center;
+}
+
+/* botões minimizar / fechar */
+.janela-btn {
+    -fx-background-color: transparent;
+    -fx-background-radius: 8;
+    -fx-border-color: transparent;
+}
+
+.janela-btn:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.14);
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+}
+
+.janela-fechar:hover {
+    -fx-background-color: #CB5C4D;
+}
+
+
+/* ========================================================================== */
+/* CASSINO                                                                   */
+/* ========================================================================== */
+
+.opcao-cassino {
+    -fx-background-color: #F1EFEA;
+    -fx-background-radius: 7;
+    -fx-text-fill: #5E5851;
+    -fx-font-size: 9px;
+    -fx-font-weight: bold;
+    -fx-padding: 7 9;
+}
+
+.opcao-cassino:hover {
+    -fx-background-color: #E2DDD6;
+}
+
+.opcao-cassino:selected {
+    -fx-background-color: #1B1B1B;
+    -fx-text-fill: white;
+}
+
+.mesa-cassino {
+    -fx-background-color: #1B1B1B;
+    -fx-background-radius: 13;
+    -fx-padding: 14 18;
+}
+
+.mesa-saldo {
+    -fx-text-fill: #BCB9B3;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}

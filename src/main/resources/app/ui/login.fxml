@@ -1,59 +1,166 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
+<BorderPane prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.ui.ControleLogin">
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.ui.ControleLogin">
-   <right>
-      <AnchorPane prefHeight="720.0" prefWidth="1002.0" style="-fx-background-color: #000000;" BorderPane.alignment="CENTER">
-         <children>
-            <Button fx:id="botaoFechar" layoutX="884.0" layoutY="14.0" mnemonicParsing="false" onMouseClicked="#fecharAba" prefHeight="30.0" prefWidth="23.0" style="-fx-background-color: transparent; -fx-border-color: #ffffff; -fx-border-radius: 10;" styleClass="botao-fechar">
-               <graphic>
-                  <FontIcon iconColor="WHITE" iconLiteral="fas-times" iconSize="20" />
-               </graphic>
-            </Button>
-            <Button fx:id="botaoMinimizar" layoutX="839.0" layoutY="15.0" mnemonicParsing="false" onMouseClicked="#minimizarAba" prefHeight="30.0" prefWidth="23.0" style="-fx-background-color: transparent; -fx-border-color: #ffffff; -fx-border-radius: 10;" styleClass="botao-fechar">
-               <graphic>
-                  <FontIcon iconColor="WHITE" iconLiteral="fas-window-minimize" iconSize="20" />
-               </graphic>
-            </Button>
-         </children>
-      </AnchorPane>
-   </right>
+   <!-- ============ ESQUERDA: formulário (350 de largura; o registro.fxml entra aqui no lugar) ============ -->
    <left>
-      <AnchorPane prefHeight="200.0" prefWidth="350.0" BorderPane.alignment="CENTER">
+      <VBox alignment="CENTER_LEFT" maxWidth="350.0" minWidth="350.0" prefWidth="350.0" styleClass="login-form" BorderPane.alignment="CENTER">
+         <padding>
+            <Insets left="40.0" right="40.0" />
+         </padding>
          <children>
-            <PasswordField fx:id="campoSenha" onAction="#entrar" layoutX="78.0" layoutY="334.0" prefHeight="26.0" prefWidth="205.0" promptText="SENHA" style="-fx-background-color: transparent; -fx-border-color: #000000; -fx-border-width: 0px 0px 1.3px;" styleClass="campo-login">
-               <font>
-                  <Font name="JetBrainsMono NF" size="12.0" />
-               </font>
-            </PasswordField>
-            <Button fx:id="BotaoEntrar" onAction="#entrar" layoutX="136.0" layoutY="391.0" mnemonicParsing="false" prefHeight="69.0" prefWidth="72.0" style="-fx-background-color: transparent; -fx-border-color: #000000; -fx-border-radius: 20;" styleClass="botao-entrar">
-               <font>
-                  <Font name="JetBrainsMono NF" size="12.0" />
-               </font>
+
+            <HBox alignment="CENTER_LEFT" spacing="10.0">
+               <children>
+                  <StackPane maxHeight="36.0" maxWidth="36.0" minHeight="36.0" minWidth="36.0" prefHeight="36.0" prefWidth="36.0" styleClass="login-logo">
+                     <children>
+                        <Label styleClass="login-logo-letra" text="V" />
+                     </children>
+                  </StackPane>
+                  <Label styleClass="login-nome" text="Vértice" />
+               </children>
+            </HBox>
+
+            <Region prefHeight="56.0" />
+
+            <Label styleClass="login-titulo" text="Entrar" />
+            <Label styleClass="login-subtitulo" text="Digite seu CPF e sua senha." />
+
+            <Region prefHeight="28.0" />
+
+            <VBox spacing="6.0">
+               <children>
+                  <Label styleClass="login-rotulo" text="CPF" />
+                  <TextField fx:id="campoCPF" promptText="000.000.000-00" styleClass="login-campo" />
+               </children>
+            </VBox>
+
+            <Region prefHeight="16.0" />
+
+            <VBox spacing="6.0">
+               <children>
+                  <Label styleClass="login-rotulo" text="SENHA" />
+                  <PasswordField fx:id="campoSenha" onAction="#entrar" promptText="Sua senha" styleClass="login-campo" />
+               </children>
+            </VBox>
+
+            <Region prefHeight="24.0" />
+
+            <Button fx:id="BotaoEntrar" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#entrar" styleClass="login-botao" text="Entrar">
                <graphic>
-                  <FontIcon iconLiteral="fas-sign-in-alt" iconSize="30" />
+                  <FontIcon iconColor="WHITE" iconLiteral="fas-arrow-right" iconSize="14" />
                </graphic>
             </Button>
-            <Hyperlink fx:id="HyperLinkCriarConta" layoutX="130.0" layoutY="473.0" onMouseClicked="#janela_registro" prefHeight="20.0" prefWidth="90.0" styleClass="link-criar" text="CRIAR CONTA" textAlignment="CENTER" textFill="#361f1f">
-               <font>
-                  <Font name="JetBrainsMono NF" size="12.0" />
-               </font>
-            </Hyperlink>
-            <TextField fx:id="campoCPF" layoutX="78.0" layoutY="292.0" prefHeight="26.0" prefWidth="205.0" promptText="CPF" style="-fx-background-color: transparent; -fx-border-color: #000000; -fx-border-width: 0px 0px 1.3px;" styleClass="campo-login">
-               <font>
-                  <Font name="JetBrainsMono NF" size="12.0" />
-               </font>
-            </TextField>
+
+            <Region prefHeight="20.0" />
+
+            <HBox alignment="CENTER_LEFT">
+               <children>
+                  <Label styleClass="login-sem-conta" text="Ainda não tem conta?" />
+                  <Hyperlink fx:id="HyperLinkCriarConta" onMouseClicked="#janela_registro" styleClass="login-link" text="Criar conta" />
+               </children>
+            </HBox>
+
+         </children>
+      </VBox>
+   </left>
+
+   <!-- ============ DIREITA: carrossel de imagens (controlado pela classe CarrosselLogin) ============ -->
+   <center>
+      <AnchorPane styleClass="login-marca" BorderPane.alignment="CENTER">
+         <children>
+
+            <!-- duas camadas de fundo que se alternam com fade -->
+            <Region fx:id="fundoA" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            <Region fx:id="fundoB" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+
+            <!-- degradê escuro para o texto ficar legível em cima de qualquer foto -->
+            <Region mouseTransparent="true" styleClass="login-slide-overlay" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+
+            <!-- título, texto e botão do slide -->
+            <VBox fx:id="blocoTexto" maxWidth="560.0" spacing="14.0" AnchorPane.leftAnchor="64.0" AnchorPane.topAnchor="110.0">
+               <children>
+                  <Label fx:id="slideTitulo" maxWidth="560.0" minHeight="-Infinity" prefWidth="560.0" styleClass="login-slide-titulo" text="Título" wrapText="true" />
+                  <Label fx:id="slideTexto" maxWidth="460.0" minHeight="-Infinity" prefWidth="460.0" styleClass="login-slide-texto" text="Texto" wrapText="true" />
+                  <Region prefHeight="10.0" />
+                  <Button mnemonicParsing="false" onMouseClicked="#janela_registro" styleClass="login-cta" text="CRIAR CONTA" />
+               </children>
+            </VBox>
+
+            <!-- bolinhas (criadas pelo CarrosselLogin) -->
+            <HBox fx:id="pontos" alignment="CENTER_LEFT" spacing="8.0" AnchorPane.bottomAnchor="190.0" AnchorPane.leftAnchor="64.0" />
+
+            <!-- caixinhas de baixo -->
+            <HBox spacing="10.0" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="48.0">
+               <children>
+                  <VBox alignment="CENTER" prefHeight="124.0" prefWidth="200.0" spacing="6.0" styleClass="login-mini-card">
+                     <children>
+                        <FontIcon iconLiteral="fas-exchange-alt" iconSize="26" />
+                        <Label styleClass="login-mini-titulo" text="Transferências" />
+                        <Label styleClass="login-mini-sub" text="Entre contas, em segundos" />
+                     </children>
+                  </VBox>
+                  <VBox alignment="CENTER" prefHeight="124.0" prefWidth="200.0" spacing="6.0" styleClass="login-mini-card">
+                     <children>
+                        <FontIcon iconLiteral="fas-piggy-bank" iconSize="26" />
+                        <Label styleClass="login-mini-titulo" text="Depósitos" />
+                        <Label styleClass="login-mini-sub" text="Direto na sua conta" />
+                     </children>
+                  </VBox>
+                  <VBox alignment="CENTER" prefHeight="124.0" prefWidth="200.0" spacing="6.0" styleClass="login-mini-card">
+                     <children>
+                        <FontIcon iconLiteral="fas-chart-line" iconSize="26" />
+                        <Label styleClass="login-mini-titulo" text="Extrato" />
+                        <Label styleClass="login-mini-sub" text="Gráficos e histórico" />
+                     </children>
+                  </VBox>
+                  <VBox alignment="CENTER" prefHeight="124.0" prefWidth="200.0" spacing="6.0" styleClass="login-mini-card">
+                     <children>
+                        <FontIcon iconLiteral="fas-shield-alt" iconSize="26" />
+                        <Label styleClass="login-mini-titulo" text="Segurança" />
+                        <Label styleClass="login-mini-sub" text="Seus dados protegidos" />
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+
+            <!-- minimizar / fechar (mesmos fx:id e handlers de antes) -->
+            <HBox spacing="6.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="16.0">
+               <children>
+                  <Button fx:id="botaoMinimizar" mnemonicParsing="false" onMouseClicked="#minimizarAba" prefHeight="30.0" prefWidth="36.0" styleClass="janela-btn">
+                     <graphic>
+                        <FontIcon iconColor="WHITE" iconLiteral="fas-window-minimize" iconSize="13" />
+                     </graphic>
+                  </Button>
+                  <Button fx:id="botaoMaximizar" mnemonicParsing="false" onMouseClicked="#maximizarAba" prefHeight="30.0" prefWidth="36.0" styleClass="janela-btn">
+                     <graphic>
+                        <FontIcon iconColor="WHITE" iconLiteral="fas-window-maximize" iconSize="13" />
+                     </graphic>
+                  </Button>
+                  <Button fx:id="botaoFechar" mnemonicParsing="false" onMouseClicked="#fecharAba" prefHeight="30.0" prefWidth="36.0" styleClass="janela-btn, janela-fechar">
+                     <graphic>
+                        <FontIcon iconColor="WHITE" iconLiteral="fas-times" iconSize="14" />
+                     </graphic>
+                  </Button>
+               </children>
+            </HBox>
+
          </children>
       </AnchorPane>
-   </left>
+   </center>
+
 </BorderPane>

@@ -24,6 +24,7 @@ public class CassinoService {
         registrar(new CaraOuCoroa(random));
         registrar(new Dado(random));
         registrar(new CacaNiquel(random));
+        registrar(new Roleta(random));
     }
 
     private void registrar(Jogo jogo) {

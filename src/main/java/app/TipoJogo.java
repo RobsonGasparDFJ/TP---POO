@@ -3,7 +3,8 @@ package app;
 public enum TipoJogo {
     CARA_COROA("Cara ou coroa"),
     DADO("Dado"),
-    CACA_NIQUEL("Caça-níquel");
+    CACA_NIQUEL("Caça-níquel"),
+    ROLETA("Roleta");
 
     private final String nome;
 
