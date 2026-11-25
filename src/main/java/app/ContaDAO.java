@@ -55,6 +55,26 @@ public class ContaDAO {
         }
     }
 
+    public void deletar(Connection conn, Conta conta) throws SQLException {
+        if (conta == null || conta.getIdConta() == null) {
+            throw new IllegalArgumentException("Conta inválida para exclusão.");
+        }
+
+        String sqlEspecializacao = (conta.getTipoConta() == TipoConta.CORRENTE)
+                ? "DELETE FROM TB_Corrente WHERE PK_idConta_Corrente = ?"
+                : "DELETE FROM TB_Poupanca WHERE PK_idConta_Poupanca = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sqlEspecializacao)) {
+            stmt.setLong(1, conta.getIdConta());
+            stmt.executeUpdate();
+        }
+
+        try (PreparedStatement stmt = conn.prepareStatement("DELETE FROM TB_Conta WHERE PK_idConta = ?")) {
+            stmt.setLong(1, conta.getIdConta());
+            stmt.executeUpdate();
+        }
+    }
+
     public Conta buscarPorId(Connection conn, Long idConta) throws SQLException {
         try (PreparedStatement stmt = conn.prepareStatement(SELECT_BASE + " WHERE c.PK_idConta = ?")) {
             stmt.setLong(1, idConta);
@@ -99,21 +119,21 @@ public class ContaDAO {
 
     private Conta mapear(ResultSet rs) throws SQLException {
         Usuario usuario = new Usuario(
-            rs.getLong("usuario_id"),
-            rs.getString("nome"),
-            rs.getString("cpf"),
-            rs.getString("telefone"),
-            rs.getString("endereco"),
-            rs.getString("senha_hash"),
-            rs.getString("salt")
+                rs.getLong("usuario_id"),
+                rs.getString("nome"),
+                rs.getString("cpf"),
+                rs.getString("telefone"),
+                rs.getString("endereco"),
+                rs.getString("senha_hash"),
+                rs.getString("salt")
         );
 
         return new Conta(
-            rs.getLong("conta_id"),
-            usuario,
-            TipoConta.valueOf(rs.getString("tipo_conta")),
-            rs.getDouble("saldo"),
-            rs.getString("chave")
+                rs.getLong("conta_id"),
+                usuario,
+                TipoConta.valueOf(rs.getString("tipo_conta")),
+                rs.getDouble("saldo"),
+                rs.getString("chave")
         );
     }
 }
