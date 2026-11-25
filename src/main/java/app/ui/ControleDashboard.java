@@ -27,7 +27,10 @@ import app.UsuarioDAO;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
+<<<<<<< HEAD
 import javafx.event.ActionEvent;
+=======
+>>>>>>> Gustavo
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -105,13 +108,19 @@ public class ControleDashboard {
     @FXML private AreaChart<String, Number> graficoSaldo;
     @FXML private BarChart<String, Number> graficoFluxo;
     @FXML private ControleCassino cassinoController; // injetado pelo <fx:include fx:id="cassino"> do dashboard.fxml
+<<<<<<< HEAD
     @FXML private Button botaoMaximizar;
 
+=======
+>>>>>>> Gustavo
 
     @FXML
     public void initialize() {
         configurarContas();
+<<<<<<< HEAD
         JanelaUtil.sincronizarIcone(botaoMaximizar);
+=======
+>>>>>>> Gustavo
         configurarTabela();
         fotoMiniatura.setClip(new Circle(17.5, 17.5, 17.5));
         if (Sessao.getUsuarioLogado() == null) {
@@ -539,6 +548,7 @@ public class ControleDashboard {
         if (labelSaudacao != null && labelSaudacao.getScene() != null) alerta.initOwner(labelSaudacao.getScene().getWindow());
         alerta.showAndWait();
     }
+<<<<<<< HEAD
 
     @FXML
     void maximizar(ActionEvent event) {
@@ -546,4 +556,6 @@ public class ControleDashboard {
     JanelaUtil.alternarMaximizada(stage);
     JanelaUtil.sincronizarIcone(botaoMaximizar);
 }
+=======
+>>>>>>> Gustavo
 }

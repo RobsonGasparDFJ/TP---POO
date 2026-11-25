@@ -18,12 +18,15 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
+<<<<<<< HEAD
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import org.kordamp.ikonli.javafx.FontIcon;
 
+=======
+>>>>>>> Gustavo
 public class ControleLogin {
 
     private final UsuarioDAO usuarioDAO = new UsuarioDAO();
@@ -46,6 +49,7 @@ public class ControleLogin {
     @FXML
     private PasswordField campoSenha;
 
+<<<<<<< HEAD
 
     @FXML private Region fundoA;
 
@@ -66,6 +70,11 @@ public class ControleLogin {
     public void initialize() {
         Mascara.cpf(campoCPF);
         new CarrosselLogin(fundoA, fundoB, blocoTexto, slideTitulo, slideTexto, pontos).iniciar();
+=======
+    @FXML
+    public void initialize() {
+        Mascara.cpf(campoCPF);
+>>>>>>> Gustavo
     }
 
     @FXML
@@ -128,6 +137,7 @@ public class ControleLogin {
         stage.setIconified(true);
     }
 
+<<<<<<< HEAD
     @FXML
     void maximizarAba(MouseEvent event) {
         Stage stage = (Stage) botaoMaximizar.getScene().getWindow();
@@ -136,6 +146,8 @@ public class ControleLogin {
         .setIconLiteral(maximizada ? "fas-window-restore" : "fas-window-maximize");
 }
 
+=======
+>>>>>>> Gustavo
     private void mostrar(Alert.AlertType tipo, String mensagem) {
         Alert alerta = new Alert(tipo, mensagem);
         alerta.setHeaderText(null);

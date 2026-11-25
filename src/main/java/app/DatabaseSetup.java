@@ -1,5 +1,7 @@
 package app;
 
+import org.sqlite.SQLiteConfig;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -10,56 +12,170 @@ public class DatabaseSetup {
     private static final String URL = "jdbc:sqlite:banco-de-dados.db";
 
     public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL);
+        SQLiteConfig config = new SQLiteConfig();
+        config.enforceForeignKeys(true);
+        return DriverManager.getConnection(URL, config.toProperties());
     }
 
     public static void inicializarBanco() {
-        String sqlUsuarios = """
-            CREATE TABLE IF NOT EXISTS usuarios (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+        String sqlUsuario = """
+            CREATE TABLE IF NOT EXISTS TB_Usuario (
+                PK_idUsuario INTEGER PRIMARY KEY AUTOINCREMENT,
                 nome TEXT NOT NULL,
                 cpf TEXT NOT NULL UNIQUE,
                 telefone TEXT,
                 endereco TEXT,
-                senha_hash TEXT NOT NULL,
+                senhaHash TEXT NOT NULL,
                 salt TEXT NOT NULL
             );
         """;
 
-        String sqlContas = """
-            CREATE TABLE IF NOT EXISTS contas (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                usuario_id INTEGER NOT NULL,
-                tipo_conta TEXT NOT NULL,
+        String sqlConta = """
+            CREATE TABLE IF NOT EXISTS TB_Conta (
+                PK_idConta INTEGER PRIMARY KEY AUTOINCREMENT,
+                FK_idUsuario INTEGER NOT NULL,
+                tipo_conta TEXT NOT NULL CHECK (tipo_conta IN ('CORRENTE', 'POUPANCA')),
                 saldo REAL NOT NULL DEFAULT 0.0,
-                chave TEXT NOT NULL,
-                FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+                chave TEXT NOT NULL UNIQUE,
+                FOREIGN KEY (FK_idUsuario) REFERENCES TB_Usuario (PK_idUsuario)
             );
         """;
 
-        String sqlTransacoes = """
-            CREATE TABLE IF NOT EXISTS transacoes (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                remetente_id INTEGER,
-                destinatario_id INTEGER,
-                valor REAL NOT NULL,
+        String sqlTransacao = sqlTabelaTransacao("TB_Transacao");
+
+        // Não há CHECK em "jogo" de propósito: um CHECK não pode ser alterado no SQLite
+        // (foi o que obrigou a migrar TB_Transacao). Os jogos válidos são o enum TipoJogo.
+        String sqlAposta = """
+            CREATE TABLE IF NOT EXISTS TB_Aposta (
+                PK_idAposta INTEGER PRIMARY KEY AUTOINCREMENT,
+                FK_idConta INTEGER NOT NULL,
+                jogo TEXT NOT NULL,
+                valor_apostado REAL NOT NULL CHECK (valor_apostado > 0),
+                escolha TEXT,
+                resultado TEXT NOT NULL,
+                ganhou INTEGER NOT NULL CHECK (ganhou IN (0, 1)),
+                premio REAL NOT NULL DEFAULT 0.0 CHECK (premio >= 0),
                 data_hora TEXT NOT NULL,
-                tipo TEXT NOT NULL,
-                FOREIGN KEY (remetente_id) REFERENCES contas(id),
-                FOREIGN KEY (destinatario_id) REFERENCES contas(id)
+                FK_idTransacao_Aposta INTEGER NOT NULL,
+                FK_idTransacao_Premio INTEGER,
+                FOREIGN KEY (FK_idConta) REFERENCES TB_Conta (PK_idConta),
+                FOREIGN KEY (FK_idTransacao_Aposta) REFERENCES TB_Transacao (PK_idTransacao),
+                FOREIGN KEY (FK_idTransacao_Premio) REFERENCES TB_Transacao (PK_idTransacao)
             );
         """;
+
+        String sqlPoupanca = """
+            CREATE TABLE IF NOT EXISTS TB_Poupanca (
+                PK_idConta_Poupanca INTEGER PRIMARY KEY,
+                FOREIGN KEY (PK_idConta_Poupanca) REFERENCES TB_Conta (PK_idConta)
+            );
+        """;
+
+        String sqlCorrente = """
+            CREATE TABLE IF NOT EXISTS TB_Corrente (
+                PK_idConta_Corrente INTEGER PRIMARY KEY,
+                FOREIGN KEY (PK_idConta_Corrente) REFERENCES TB_Conta (PK_idConta)
+            );
+        """;
+
+        String[] indices = {
+            "CREATE INDEX IF NOT EXISTS fk_contas_usuarios ON TB_Conta (FK_idUsuario);",
+            "CREATE INDEX IF NOT EXISTS fk_TB_Transacao_TB_Conta1_idx ON TB_Transacao (FK_idConta_Remetente);",
+            "CREATE INDEX IF NOT EXISTS fk_TB_Transacao_TB_Conta2_idx ON TB_Transacao (FK_idConta_Destinatario);",
+            "CREATE INDEX IF NOT EXISTS fk_TB_Aposta_TB_Conta_idx ON TB_Aposta (FK_idConta, data_hora);"
+        };
 
         try (Connection conn = getConnection();
              Statement stmt = conn.createStatement()) {
-            
-            stmt.execute("PRAGMA foreign_keys = ON;");
-            stmt.execute(sqlUsuarios);
-            stmt.execute(sqlContas);
-            stmt.execute(sqlTransacoes);
+
+            stmt.execute(sqlUsuario);
+            stmt.execute(sqlConta);
+            stmt.execute(sqlTransacao);
+            stmt.execute(sqlPoupanca);
+            stmt.execute(sqlCorrente);
+            migrarTiposTransacao(conn); // precisa vir antes de TB_Aposta, que referencia TB_Transacao
+            stmt.execute(sqlAposta);
+            adicionarColunaFotoPerfil(conn);
+            for (String indice : indices) {
+                stmt.execute(indice);
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    private static String sqlTabelaTransacao(String nome) {
+        return """
+            CREATE TABLE IF NOT EXISTS %s (
+                PK_idTransacao INTEGER PRIMARY KEY AUTOINCREMENT,
+                FK_idConta_Remetente INTEGER,
+                FK_idConta_Destinatario INTEGER,
+                valor REAL NOT NULL,
+                data_hora TEXT NOT NULL,
+                tipo TEXT NOT NULL CHECK (tipo IN ('PIX', 'DEPOSITO', 'SAQUE', 'TRANSFERENCIA', 'APOSTA', 'PREMIO')),
+                FOREIGN KEY (FK_idConta_Remetente) REFERENCES TB_Conta (PK_idConta),
+                FOREIGN KEY (FK_idConta_Destinatario) REFERENCES TB_Conta (PK_idConta)
+            );
+        """.formatted(nome);
+    }
+
+    /**
+     * Bancos criados antes do cassino têm um CHECK em TB_Transacao.tipo que não aceita
+     * APOSTA nem PREMIO, e o SQLite não permite alterar um CHECK. Nesse caso a tabela é
+     * recriada com o CHECK novo, copiando todas as transações (com os mesmos ids), tudo
+     * dentro de uma transação: se algo falhar, o banco antigo fica intacto.
+     */
+    private static void migrarTiposTransacao(Connection conn) throws SQLException {
+        String ddl = null;
+        try (Statement stmt = conn.createStatement();
+             var resultado = stmt.executeQuery(
+                     "SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'TB_Transacao'")) {
+            if (resultado.next()) {
+                ddl = resultado.getString(1);
+            }
+        }
+        if (ddl == null || ddl.contains("'APOSTA'")) {
+            return; // banco novo, ou já migrado
+        }
+
+        boolean autoCommit = conn.getAutoCommit();
+        conn.setAutoCommit(false);
+        try (Statement stmt = conn.createStatement()) {
+            stmt.execute(sqlTabelaTransacao("TB_Transacao_nova"));
+            stmt.execute("""
+                INSERT INTO TB_Transacao_nova
+                    (PK_idTransacao, FK_idConta_Remetente, FK_idConta_Destinatario, valor, data_hora, tipo)
+                SELECT PK_idTransacao, FK_idConta_Remetente, FK_idConta_Destinatario, valor, data_hora, tipo
+                FROM TB_Transacao
+            """);
+            stmt.execute("DROP TABLE TB_Transacao");
+            stmt.execute("ALTER TABLE TB_Transacao_nova RENAME TO TB_Transacao");
+            conn.commit();
+        } catch (SQLException e) {
+            conn.rollback();
+            throw e;
+        } finally {
+            conn.setAutoCommit(autoCommit);
+        }
+    }
+
+    /** Migração simples para bancos já existentes antes da criação do perfil. */
+    private static void adicionarColunaFotoPerfil(Connection conn) throws SQLException {
+        boolean existe = false;
+        try (Statement stmt = conn.createStatement();
+             var resultado = stmt.executeQuery("PRAGMA table_info(TB_Usuario)")) {
+            while (resultado.next()) {
+                if ("fotoPerfil".equalsIgnoreCase(resultado.getString("name"))) {
+                    existe = true;
+                    break;
+                }
+            }
+        }
+        if (!existe) {
+            try (Statement stmt = conn.createStatement()) {
+                stmt.execute("ALTER TABLE TB_Usuario ADD COLUMN fotoPerfil TEXT");
+            }
         }
     }
 }

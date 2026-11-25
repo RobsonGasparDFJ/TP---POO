@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<!-- Aba do cassino. É incluída em dashboard.fxml por <fx:include>; as cores e classes vêm de estilo.css. -->
+<HBox spacing="18.0" style="-fx-background-color: #F5F3EF; -fx-padding: 4 0 0 0;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.ui.ControleCassino">
+   <children>
+
+      <!-- Jogar -->
+      <VBox minWidth="340.0" prefWidth="340.0" maxWidth="340.0" spacing="10.0" styleClass="content-card">
+         <children>
+            <HBox alignment="CENTER_LEFT" spacing="8.0">
+               <children>
+                  <VBox spacing="2.0" HBox.hgrow="ALWAYS">
+                     <children>
+                        <Label styleClass="card-title" text="Cassino" />
+                        <Label styleClass="card-subtitle" text="Aposte o saldo da conta selecionada." />
+                     </children>
+                  </VBox>
+                  <FontIcon iconLiteral="fas-dice" iconSize="18" styleClass="muted-icon" />
+               </children>
+            </HBox>
+
+            <Label styleClass="card-subtitle" text="JOGO" />
+            <ComboBox fx:id="comboJogo" maxWidth="1.7976931348623157E308" />
+            <Label fx:id="labelRegras" styleClass="card-subtitle" wrapText="true" />
+            <Label fx:id="labelRetorno" styleClass="card-subtitle" wrapText="true" />
+
+            <VBox fx:id="caixaEscolha" spacing="6.0">
+               <children>
+                  <Label styleClass="card-subtitle" text="SUA ESCOLHA" />
+                  <ComboBox fx:id="comboEscolha" maxWidth="1.7976931348623157E308" />
+               </children>
+            </VBox>
+
+            <Label styleClass="card-subtitle" text="VALOR DA APOSTA" />
+            <TextField fx:id="campoValor" onAction="#apostar" promptText="Valor (R$)" styleClass="transfer-input" />
+            <Label fx:id="labelLimites" styleClass="card-subtitle" />
+
+            <Button fx:id="botaoApostar" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#apostar" styleClass="transfer-button" text="APOSTAR" />
+            <Label fx:id="labelResultado" wrapText="true" />
+         </children>
+      </VBox>
+
+      <!-- Histórico -->
+      <VBox spacing="8.0" styleClass="content-card" HBox.hgrow="ALWAYS">
+         <children>
+            <VBox spacing="2.0">
+               <children>
+                  <Label styleClass="card-title" text="Últimas apostas" />
+                  <Label fx:id="labelResumo" styleClass="card-subtitle" text="Nenhuma aposta nesta conta" />
+               </children>
+            </VBox>
+            <TableView fx:id="tabelaApostas" fixedCellSize="36.0" styleClass="transactions-table" VBox.vgrow="ALWAYS">
+               <columns>
+                  <TableColumn fx:id="colunaJogo" prefWidth="110.0" text="JOGO" />
+                  <TableColumn fx:id="colunaValor" prefWidth="90.0" text="APOSTA" />
+                  <TableColumn fx:id="colunaSorteio" prefWidth="210.0" text="SORTEIO" />
+                  <TableColumn fx:id="colunaResultado" prefWidth="100.0" text="RESULTADO" />
+                  <TableColumn fx:id="colunaData" prefWidth="95.0" text="DATA" />
+               </columns>
+            </TableView>
+         </children>
+      </VBox>
+
+   </children>
+</HBox>
