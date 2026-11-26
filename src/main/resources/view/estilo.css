@@ -332,9 +332,9 @@
 
 
 .root {
-    -cor-primaria: #4A3AFF;   
-    -cor-destaque: #FFE600;   
-    -cor-escura:   #0D0B2B;   
+    -cor-primaria: #073B27;
+    -cor-destaque: #A8EA00;
+    -cor-escura:   #05291B;
 }
 
 /* ---- lado esquerdo: formulário ---- */
@@ -344,49 +344,48 @@
 
 .login-logo {
     -fx-background-color: -cor-primaria;
-    -fx-background-radius: 11;
-}
-
-.login-logo-letra {
-    -fx-text-fill: -cor-destaque;
-    -fx-font-size: 20px;
-    -fx-font-weight: bold;
+    -fx-background-radius: 12;
 }
 
 .login-nome {
-    -fx-text-fill: -cor-escura;
+    -fx-text-fill: -cor-primaria;
     -fx-font-size: 20px;
     -fx-font-weight: bold;
 }
 
+.login-slogan {
+    -fx-text-fill: #64748B;
+    -fx-font-size: 9px;
+}
+
 .login-titulo {
-    -fx-text-fill: -cor-escura;
+    -fx-text-fill: #111815;
     -fx-font-size: 30px;
     -fx-font-weight: bold;
 }
 
 .login-subtitulo {
-    -fx-text-fill: #7A7A95;
+    -fx-text-fill: #64748B;
     -fx-font-size: 11px;
-    -fx-padding: 6 0 0 0;
+    -fx-padding: 4 0 0 0;
 }
 
 .login-rotulo {
-    -fx-text-fill: #7A7A95;
+    -fx-text-fill: -cor-primaria;
     -fx-font-size: 10px;
     -fx-font-weight: bold;
 }
 
 .login-campo {
-    -fx-background-color: #F4F4FA;
+    -fx-background-color: #F3F5F4;
     -fx-background-radius: 10;
-    -fx-border-color: #E3E3EE;
+    -fx-border-color: #DCE3DF;
     -fx-border-radius: 10;
     -fx-border-width: 1.5;
     -fx-padding: 12 14;
     -fx-font-size: 13px;
-    -fx-text-fill: -cor-escura;
-    -fx-prompt-text-fill: #A9A9BF;
+    -fx-text-fill: #111815;
+    -fx-prompt-text-fill: #94A39C;
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
 }
@@ -411,19 +410,19 @@
 }
 
 .login-botao:hover {
-    -fx-background-color: derive(-cor-primaria, -15%);
+    -fx-background-color: #0B5237;
     -fx-scale-x: 1;
     -fx-scale-y: 1;
 }
 
 .login-botao:pressed {
-    -fx-background-color: derive(-cor-primaria, -28%);
+    -fx-background-color: #042418;
     -fx-scale-x: 1;
     -fx-scale-y: 1;
 }
 
 .login-sem-conta {
-    -fx-text-fill: #7A7A95;
+    -fx-text-fill: #64748B;
     -fx-font-size: 11px;
 }
 
@@ -445,45 +444,82 @@
     -fx-scale-y: 1;
 }
 
-/* ---- lado direito: carrossel ---- */
-.login-marca {
-    -fx-background-color: -cor-escura;
+/* card promocional inferior esquerdo */
+.login-promo-card {
+    -fx-background-color: -cor-primaria;
+    -fx-background-radius: 10;
+    -fx-padding: 11 12;
 }
 
-/* degradê por cima da foto: escuro à esquerda (texto) e embaixo (caixinhas) */
+.login-promo-icone {
+    -fx-background-color: #042418;
+    -fx-background-radius: 8;
+    -fx-border-color: rgba(168, 234, 0, 0.35);
+    -fx-border-radius: 8;
+}
+.login-promo-titulo {
+    -fx-text-fill: -cor-destaque;
+    -fx-font-size: 9px;
+    -fx-font-weight: bold;
+}
+
+.login-promo-texto {
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 10px;
+}
+
+/* ---- lado direito: carrossel ---- */
+.login-marca {
+    -fx-background-color: -cor-primaria;
+}
+
 .login-slide-overlay {
     -fx-background-color:
-        linear-gradient(to right, rgba(13, 11, 43, 0.82) 0%, rgba(13, 11, 43, 0.50) 50%, rgba(13, 11, 43, 0.10) 100%),
-        linear-gradient(to top, rgba(13, 11, 43, 0.65) 0%, rgba(13, 11, 43, 0) 45%);
+        radial-gradient(center 75% 42%, radius 65%, rgba(168, 234, 0, 0.14) 0%, rgba(7, 59, 39, 0.0) 70%),
+        linear-gradient(to top, rgba(4, 30, 20, 0.60) 0%, rgba(7, 59, 39, 0.0) 45%);
+}
+
+.login-online-badge {
+    -fx-background-color: rgba(4, 30, 20, 0.65);
+    -fx-background-radius: 20;
+    -fx-padding: 6 14;
+    -fx-border-color: rgba(168, 234, 0, 0.30);
+    -fx-border-radius: 20;
+}
+
+.login-online-texto {
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
 }
 
 .login-slide-titulo {
     -fx-text-fill: -cor-destaque;
-    -fx-font-size: 40px;
+    -fx-font-size: 38px;
     -fx-font-weight: bold;
 }
 
 .login-slide-texto {
-    -fx-text-fill: white;
-    -fx-font-size: 15px;
+    -fx-text-fill: #E2ECE8;
+    -fx-font-size: 14px;
 }
 
 .login-cta {
     -fx-background-color: -cor-destaque;
-    -fx-background-radius: 4;
+    -fx-background-radius: 8;
     -fx-text-fill: -cor-primaria;
     -fx-font-size: 12px;
     -fx-font-weight: bold;
-    -fx-padding: 14 30;
+    -fx-padding: 14 28;
 }
 
 .login-cta:hover {
-    -fx-background-color: derive(-cor-destaque, -10%);
+    -fx-background-color: #B9F819;
 }
 
 /* bolinhas do carrossel */
 .login-ponto {
-    -fx-background-color: rgba(255, 255, 255, 0.45);
+    -fx-background-color: rgba(255, 255, 255, 0.35);
     -fx-background-radius: 5;
     -fx-min-width: 9;
     -fx-pref-width: 9;
@@ -503,13 +539,22 @@
 
 /* caixinhas brancas de baixo */
 .login-mini-card {
-    -fx-background-color: white;
-    -fx-background-radius: 6;
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 10;
+    -fx-border-color: transparent;
+    -fx-border-radius: 10;
+    -fx-border-width: 2.5;
     -fx-padding: 14 12;
+    -fx-cursor: hand;
 }
 
-.login-mini-card .ikonli-font-icon {
-    -fx-icon-color: -cor-primaria;
+.login-mini-card:hover {
+    -fx-translate-y: -3;
+}
+
+.login-mini-card-ativo {
+    -fx-border-color: -cor-destaque;
+    -fx-effect: dropshadow(gaussian, rgba(168, 234, 0, 0.55), 16, 0.3, 0, 0);
 }
 
 .login-mini-titulo {
@@ -519,7 +564,7 @@
 }
 
 .login-mini-sub {
-    -fx-text-fill: #5B5B7A;
+    -fx-text-fill: #5B6B64;
     -fx-font-size: 10px;
     -fx-wrap-text: true;
     -fx-text-alignment: center;
@@ -541,7 +586,6 @@
 .janela-fechar:hover {
     -fx-background-color: #CB5C4D;
 }
-
 
 /* ========================================================================== */
 /* CASSINO                                                                   */
