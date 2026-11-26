@@ -57,6 +57,13 @@
                   </FlowPane>
                   <Label fx:id="labelLimites" styleClass="card-subtitle" />
 
+                  <VBox fx:id="caixaAutomatica" managed="false" spacing="6.0" visible="false">
+                     <children>
+                        <Label styleClass="card-subtitle" text="RETIRADA AUTOMÁTICA (OPCIONAL)" />
+                        <TextField fx:id="campoAutomatico" onAction="#apostar" promptText="Ex.: 2,00" styleClass="transfer-input" />
+                     </children>
+                  </VBox>
+
                   <Button fx:id="botaoApostar" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#apostar" styleClass="transfer-button" text="APOSTAR" />
                </children>
             </VBox>
@@ -72,6 +79,7 @@
             <Label fx:id="labelSaldoCassino" styleClass="mesa-saldo" />
             <PalcoCassino fx:id="palco" />
             <Label fx:id="labelResultado" minHeight="20.0" wrapText="true" />
+            <Button fx:id="botaoRetirar" managed="false" minWidth="220.0" mnemonicParsing="false" onAction="#retirarAgora" styleClass="botao-retirar" text="RETIRAR" visible="false" />
          </children>
       </VBox>
 
@@ -86,11 +94,11 @@
             </VBox>
             <TableView fx:id="tabelaApostas" fixedCellSize="36.0" styleClass="transactions-table" VBox.vgrow="ALWAYS">
                <columns>
-                  <TableColumn fx:id="colunaJogo" prefWidth="110.0" maxWidth="95.0" text="JOGO" />
-                  <TableColumn fx:id="colunaValor" prefWidth="90.0" maxWidth="85.0" text="APOSTA" />
-                  <TableColumn fx:id="colunaSorteio" prefWidth="210.0" text="SORTEIO" />
-                  <TableColumn fx:id="colunaResultado" prefWidth="100.0" maxWidth="95.0" text="RESULTADO" />
-                  <TableColumn fx:id="colunaData" prefWidth="95.0" maxWidth="85.0" text="DATA" />
+                  <TableColumn fx:id="colunaJogo" prefWidth="110.0" text="JOGO" />
+                  <TableColumn fx:id="colunaValor" prefWidth="90.0" text="APOSTA" />
+                  <TableColumn fx:id="colunaSorteio" prefWidth="210.0" minWidth="175.0" text="SORTEIO" />
+                  <TableColumn fx:id="colunaResultado" prefWidth="100.0" minWidth="100.0" text="RESULTADO" />
+                  <TableColumn fx:id="colunaData" prefWidth="95.0" text="DATA" />
                </columns>
             </TableView>
          </children>

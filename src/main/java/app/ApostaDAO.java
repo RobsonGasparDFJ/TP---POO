@@ -53,6 +53,25 @@ public class ApostaDAO {
         }
     }
 
+    /** Transforma em vitória uma rodada do foguete que estava gravada como perdida. */
+    public void registrarRetirada(Connection conn, Long idAposta, double premio, String resultado,
+                                  Long idTransacaoPremio) throws SQLException {
+        String sql = """
+            UPDATE TB_Aposta SET ganhou = 1, premio = ?, resultado = ?, FK_idTransacao_Premio = ?
+            WHERE PK_idAposta = ? AND ganhou = 0
+        """;
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setDouble(1, premio);
+            stmt.setString(2, resultado);
+            stmt.setLong(3, idTransacaoPremio);
+            stmt.setLong(4, idAposta);
+            if (stmt.executeUpdate() != 1) {
+                throw new SQLException("A rodada não pode ser paga de novo.");
+            }
+        }
+    }
+
     /** Apostas mais recentes da conta, da mais nova para a mais antiga. */
     public List<Aposta> listarRecentes(Connection conn, Long idConta, int limite) throws SQLException {
         String sql = """

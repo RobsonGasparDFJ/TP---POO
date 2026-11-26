@@ -9,8 +9,13 @@ import java.util.function.Supplier;
 import app.Aposta;
 import app.CassinoService;
 import app.Conta;
+import app.Foguete;
 import app.Jogo;
 import app.ResumoApostas;
+import app.RodadaFoguete;
+import app.TipoJogo;
+import javafx.animation.AnimationTimer;
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
@@ -26,6 +31,7 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 
 /**
  * Aba do cassino (cassino.fxml). O dashboard diz qual conta está selecionada e é avisado
@@ -53,6 +59,13 @@ public class ControleCassino {
     private final ToggleGroup grupoEscolhas = new ToggleGroup();
     private boolean animando = false;
 
+    // estado do voo em andamento (só no jogo do foguete)
+    private RodadaFoguete rodada;
+    private Aposta retirada;
+    private double multiplicadorAtual;
+    private Double retiradaAutomatica;
+    private VooFoguete voo;
+
     @FXML private VBox painelControles;
     @FXML private FlowPane caixaJogos;
     @FXML private Label labelRegras;
@@ -60,6 +73,9 @@ public class ControleCassino {
     @FXML private VBox caixaEscolha;
     @FXML private FlowPane caixaOpcoes;
     @FXML private PalcoCassino palco;
+    @FXML private VBox caixaAutomatica;
+    @FXML private TextField campoAutomatico;
+    @FXML private Button botaoRetirar;
     @FXML private Label labelSaldoCassino;
     @FXML private TextField campoValor;
     @FXML private Label labelLimites;
@@ -151,6 +167,10 @@ public class ControleCassino {
             String escolha = jogo.getOpcoes().isEmpty()
                     ? null : (String) grupoEscolhas.getSelectedToggle().getUserData();
             double valor = converterValor(campoValor.getText());
+            if (jogo.getTipo() == TipoJogo.FOGUETE) {
+                decolar(conta, valor);
+                return;
+            }
 
             // o saldo é gravado aqui; a animação só revela o resultado
             Aposta aposta = cassinoService.apostar(conta.getIdConta(), jogo.getTipo(), escolha, valor);
@@ -169,6 +189,130 @@ public class ControleCassino {
         } catch (RuntimeException e) {
             mostrarAviso(e.getMessage());
         }
+    }
+
+    // ---------------------------------------------------------------- foguete
+
+    private void decolar(Conta conta, double valor) {
+        Double alvo = lerRetiradaAutomatica();
+        rodada = cassinoService.iniciarFoguete(conta.getIdConta(), valor);
+        retiradaAutomatica = alvo;
+        retirada = null;
+        multiplicadorAtual = 1.0;
+
+        definirAnimando(true);
+        mostrarSaldo(conta.getSaldo() - rodada.getAposta().getValor());
+        definirMensagem("Decolando...", COR_AVISO);
+        voo = palco.novoVoo();
+        mostrarBotaoRetirar(true);
+        botaoRetirar.setText("RETIRAR");
+        botaoRetirar.requestFocus(); // a barra de espaço também retira
+
+        double saldoDepoisDaAposta = conta.getSaldo() - rodada.getAposta().getValor();
+        new AnimationTimer() {
+            private long anterior = -1;
+            private double segundos = 0;
+
+            @Override
+            public void handle(long agora) {
+                if (anterior >= 0) {
+                    // depois da retirada o tempo corre mais rápido, para não prender o jogador
+                    double ritmo = retirada == null ? 1 : 4;
+                    // o limite evita um salto no multiplicador se a janela travar
+                    segundos += Math.min((agora - anterior) / 1e9, 0.1) * ritmo;
+                }
+                anterior = agora;
+
+                double valorAtual = Foguete.multiplicadorEm(segundos);
+                double explosao = rodada.getExplosao();
+
+                // no multiplicador máximo a retirada é sempre automática
+                double alvo = retiradaAutomatica != null ? retiradaAutomatica : Foguete.MULTIPLICADOR_MAXIMO;
+                if (retirada == null && valorAtual >= alvo && alvo <= explosao) {
+                    retirar(alvo, saldoDepoisDaAposta);
+                }
+
+                if (valorAtual >= explosao) {
+                    stop();
+                    multiplicadorAtual = explosao;
+                    voo.atualizar(segundos, explosao);
+                    encerrarVoo();
+                    return;
+                }
+
+                multiplicadorAtual = valorAtual;
+                voo.atualizar(segundos, valorAtual);
+                if (retirada == null) {
+                    botaoRetirar.setText("RETIRAR " + MOEDA.format(rodada.getAposta().getValor() * valorAtual));
+                }
+            }
+        }.start();
+    }
+
+    @FXML
+    private void retirarAgora() {
+        if (rodada == null || retirada != null) {
+            return;
+        }
+        if (multiplicadorAtual < Foguete.RETIRADA_MINIMA) {
+            return; // ainda em 1,00x
+        }
+        Conta conta = contaSelecionada.get();
+        double saldoVisivel = conta == null ? 0 : conta.getSaldo() - rodada.getAposta().getValor();
+        retirar(multiplicadorAtual, saldoVisivel);
+    }
+
+    private void retirar(double multiplicador, double saldoDepoisDaAposta) {
+        try {
+            retirada = cassinoService.retirarFoguete(rodada, multiplicador);
+            botaoRetirar.setDisable(true);
+            botaoRetirar.setText("RETIRADO");
+            voo.marcarRetirada(multiplicador);
+            mostrarSaldo(saldoDepoisDaAposta + retirada.getPremio());
+            definirMensagem("Você garantiu " + MOEDA.format(retirada.getPremio()) + "!", COR_GANHOU);
+            palco.soltarConfete();
+        } catch (RuntimeException e) {
+            retiradaAutomatica = null; // não repete a tentativa a cada quadro
+            mostrarAviso(e.getMessage());
+        }
+    }
+
+    private void encerrarVoo() {
+        voo.explodir(rodada.getExplosao());
+        mostrarBotaoRetirar(false);
+        Aposta resultado = retirada != null ? retirada : rodada.getAposta();
+        rodada = null;
+        mostrarResultado(resultado);
+
+        PauseTransition pausa = new PauseTransition(Duration.millis(900));
+        pausa.setOnFinished(e -> {
+            definirAnimando(false);
+            Platform.runLater(aoApostar);
+        });
+        pausa.play();
+    }
+
+    private void mostrarBotaoRetirar(boolean visivel) {
+        botaoRetirar.setDisable(false);
+        botaoRetirar.setVisible(visivel);
+        botaoRetirar.setManaged(visivel);
+    }
+
+    /** Multiplicador digitado para a retirada automática; nulo se o campo estiver vazio. */
+    private Double lerRetiradaAutomatica() {
+        String texto = campoAutomatico.getText() == null
+                ? "" : campoAutomatico.getText().trim().toLowerCase().replace("x", "").replace(',', '.');
+        if (texto.isEmpty()) {
+            return null;
+        }
+        double alvo;
+        try {
+            alvo = Double.parseDouble(texto);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Informe um multiplicador válido, como 2,00.");
+        }
+        Foguete.validarRetirada(alvo);
+        return Math.floor(alvo * 100 + 1e-6) / 100;
     }
 
     /** Botões de valor rápido: o userData é um número, "METADE" ou "MAXIMO". */
@@ -242,6 +386,10 @@ public class ControleCassino {
         if (pedeEscolha) {
             grupoEscolhas.selectToggle(grupoEscolhas.getToggles().get(0));
         }
+
+        boolean ehFoguete = jogo.getTipo() == TipoJogo.FOGUETE;
+        caixaAutomatica.setVisible(ehFoguete);
+        caixaAutomatica.setManaged(ehFoguete);
 
         palco.preparar(jogo.getTipo());
         labelResultado.setText("");

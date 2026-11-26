@@ -576,3 +576,12 @@
     -fx-font-size: 11px;
     -fx-font-weight: bold;
 }
+
+.botao-retirar {
+    -fx-background-color: #6FD0A4;
+    -fx-background-radius: 8;
+    -fx-text-fill: #10271D;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-padding: 9 18;
+}

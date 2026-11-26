@@ -75,6 +75,7 @@ public class PalcoCassino extends StackPane {
             case CACA_NIQUEL -> getChildren().setAll(
                     rolos(List.of(rolo(Simbolo.SETE), rolo(Simbolo.SETE), rolo(Simbolo.SETE))));
             case ROLETA -> getChildren().setAll(mesaRoleta(roda()));
+            case FOGUETE -> getChildren().setAll(new VooFoguete());
         }
     }
 
@@ -86,6 +87,8 @@ public class PalcoCassino extends StackPane {
                     aposta.getDescricao().substring(aposta.getDescricao().length() - 1)));
             case CACA_NIQUEL -> animarRolos(lerSimbolos(aposta.getDescricao()));
             case ROLETA -> animarRoleta(Integer.parseInt(aposta.getDescricao().split(" ")[1]));
+            // o foguete é interativo: quem o conduz é o controller, via novoVoo()
+            case FOGUETE -> throw new IllegalArgumentException("Use novoVoo() para o foguete.");
         };
 
         SequentialTransition rodada = new SequentialTransition(animacao);
@@ -108,6 +111,13 @@ public class PalcoCassino extends StackPane {
         rodada.getChildren().add(new PauseTransition(Duration.millis(150)));
         rodada.setOnFinished(e -> aoTerminar.run());
         rodada.play();
+    }
+
+    /** Coloca um foguete novo no palco, pronto para decolar. */
+    public VooFoguete novoVoo() {
+        VooFoguete voo = new VooFoguete();
+        getChildren().setAll(voo);
+        return voo;
     }
 
     // ---------------------------------------------------------------- vitória
@@ -145,7 +155,7 @@ public class PalcoCassino extends StackPane {
     }
 
     /** Papéis coloridos caindo sobre o palco; somem sozinhos. */
-    private void soltarConfete() {
+    void soltarConfete() {
         Color[] cores = {DOURADO, VERMELHO, Color.web("#4A6FD0"), Color.web("#6FD0A4"), Color.WHITE};
         Pane camada = new Pane();
         camada.setMouseTransparent(true);
