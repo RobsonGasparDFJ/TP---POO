@@ -24,6 +24,7 @@ import service.TransferenciaService;
 import repository.UsuarioDAO;
 import repository.TransacaoDAO;
 import model.Transacao;
+import service.AnaliseFinanceiraService;
 import util.JanelaUtil;
 import util.Sessao;
 
@@ -67,6 +68,7 @@ public class ControleDashboard {
     private final TransacaoDAO transacaoDAO = new TransacaoDAO();
     private final TransferenciaService transferenciaService = new TransferenciaService();
     private final MovimentacaoService movimentacaoService = new MovimentacaoService();
+    private final AnaliseFinanceiraService analiseFinanceiraService = new AnaliseFinanceiraService();
     private boolean transferenciaPorPix = true;
     private List<Transacao> transacoes = List.of();
 
@@ -216,19 +218,20 @@ public class ControleDashboard {
         double entradas = 0;
         double saidas = 0;
         if (conta != null) {
-            for (Transacao transacao : transacoes) {
-                if (ehEntrada(transacao, conta)) entradas += transacao.getValor();
-                else saidas += transacao.getValor();
-            }
+            AnaliseFinanceiraService.Resumo resumo =
+                    analiseFinanceiraService.resumir(conta.getIdConta(), transacoes);
+            entradas = resumo.entradas();
+            saidas = resumo.saidas();
             XYChart.Series<String, Number> saldo = new XYChart.Series<>();
             double saldoAtual = conta.getSaldo();
-            List<Transacao> recentes = new ArrayList<>(transacoes.subList(0, Math.min(6, transacoes.size())));
+            List<Transacao> recentes = new ArrayList<>(analiseFinanceiraService.limitarRecentes(transacoes, 6));
             // Reconstrói o saldo de cada movimentação usando o saldo atual da conta.
             List<Transacao> todasReversas = new ArrayList<>(transacoes);
             java.util.Map<Long, Double> saldoApos = new java.util.HashMap<>();
             for (Transacao transacao : todasReversas) {
                 saldoApos.put(transacao.getId(), saldoAtual);
-                saldoAtual += ehEntrada(transacao, conta) ? -transacao.getValor() : transacao.getValor();
+                saldoAtual += analiseFinanceiraService.ehEntrada(transacao, conta.getIdConta())
+                        ? -transacao.getValor() : transacao.getValor();
             }
             Collections.reverse(recentes);
             for (Transacao transacao : recentes) {
@@ -523,7 +526,7 @@ public class ControleDashboard {
     }
 
     private boolean ehEntrada(Transacao transacao, Conta conta) {
-        return transacao.getDestinatario() != null && transacao.getDestinatario().getIdConta().equals(conta.getIdConta());
+        return conta != null && analiseFinanceiraService.ehEntrada(transacao, conta.getIdConta());
     }
     private String nomeTipo(Transacao t) { return ehEntrada(t, comboContas.getValue()) ? "ENTRADA" : "SAÍDA"; }
     private String descricao(Transacao t) {

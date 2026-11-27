@@ -1,0 +1,36 @@
+DEPENDÊNCIAS PARA EXECUTAR O PROJETO
+====================================
+
+PRÉ-REQUISITOS
+- JDK 17 ou superior.
+- Apache Maven instalado e disponível no PATH (comando: mvn).
+- Acesso à internet na primeira execução, para o Maven baixar as bibliotecas.
+
+BIBLIOTECAS DO PROJETO
+As dependências abaixo já estão declaradas no pom.xml. Não é necessário
+baixá-las ou instalá-las manualmente; o Maven resolve também as dependências
+transitivas e os arquivos JavaFX específicos do sistema operacional.
+
+- JavaFX Controls 17.0.10
+- JavaFX FXML 17.0.10
+- SQLite JDBC 3.45.1.0
+- Ikonli JavaFX 12.4.0
+- Ikonli FontAwesome 5 Pack 12.4.0
+- JUnit Jupiter 6.1.3 (somente para os testes)
+
+COMO INICIAR
+Na pasta raiz do repositório, execute:
+
+    mvn javafx:run
+
+O comando compila e abre a interface JavaFX. O banco SQLite é criado ou
+atualizado automaticamente no arquivo banco-de-dados.db, relativo à pasta
+de trabalho usada para iniciar o programa. Execute o comando na raiz do
+repositório para usar o banco incluído no projeto.
+
+Para executar os testes automatizados:
+
+    mvn test
+
+O pom.xml é o manifesto oficial das dependências Java deste projeto; não é
+necessário um requirements.txt (arquivo usado em projetos Python).

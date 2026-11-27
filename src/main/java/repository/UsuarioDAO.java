@@ -8,8 +8,24 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Objects;
 
 public class UsuarioDAO {
+
+    private final ConnectionFactory connectionFactory;
+
+    public UsuarioDAO() {
+        this(DatabaseSetup::getConnection);
+    }
+
+    UsuarioDAO(ConnectionFactory connectionFactory) {
+        this.connectionFactory = Objects.requireNonNull(connectionFactory);
+    }
+
+    @FunctionalInterface
+    interface ConnectionFactory {
+        Connection open() throws SQLException;
+    }
 
     public void salvar(Connection conn, Usuario usuario) throws SQLException {
         String sql = """
@@ -35,7 +51,7 @@ public class UsuarioDAO {
     }
 
     public void salvar(Usuario usuario) {
-        try (Connection conn = DatabaseSetup.getConnection()) {
+        try (Connection conn = connectionFactory.open()) {
             salvar(conn, usuario);
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao salvar usuário: " + e.getMessage(), e);
@@ -45,7 +61,7 @@ public class UsuarioDAO {
     public Usuario buscarPorCpf(String cpf) {
         String sql = "SELECT * FROM TB_Usuario WHERE cpf = ?";
 
-        try (Connection conn = DatabaseSetup.getConnection();
+        try (Connection conn = connectionFactory.open();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, cpf);
@@ -83,7 +99,7 @@ public class UsuarioDAO {
 
     public void atualizarPerfil(Usuario usuario) {
         String sql = "UPDATE TB_Usuario SET nome = ?, telefone = ?, endereco = ?, fotoPerfil = ? WHERE PK_idUsuario = ?";
-        try (Connection conn = DatabaseSetup.getConnection();
+        try (Connection conn = connectionFactory.open();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, usuario.getNome());
             stmt.setString(2, usuario.getTelefone());
